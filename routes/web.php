@@ -7,7 +7,7 @@ Route::get('', function () {
 });
 
 if (config('app.env') === "homologation") {
-	Route::get('email-test/{method}', [DebugController::class, 'emailTest']);
+	Route::get('debug/{method}', [DebugController::class, 'handler']);
 }
 
 require "partials/auth.php";

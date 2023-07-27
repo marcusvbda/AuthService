@@ -1,7 +1,11 @@
 <?php
 
 return [
-
+    "enabled_providers" => [
+        "github",
+        // "google",
+        // "facebook",
+    ],
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults

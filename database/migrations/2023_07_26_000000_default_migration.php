@@ -61,8 +61,10 @@ class DefaultMigration extends Migration
 			$table->string('email');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
+			$table->string('provider')->nullable();
+			$table->string('provider_id')->nullable();
 			$table->string('password');
-			$table->string('role');
+			$table->string('role')->nullable();
 			$table->string('plan');
 			$table->jsonb('data')->nullable();
 			$table->timestamp('email_verified_at')->nullable();

@@ -10,6 +10,7 @@ use Auth;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use marcusvbda\vstack\Services\Messages;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -54,7 +55,6 @@ class AuthController extends Controller
 						$fail(User::PASS_VALIDATOR_MESSAGE);
 					}
 				}],
-				'plan'     => 'required',
 				'confirm_password' => 'required|same:password'
 			]);
 
@@ -150,6 +150,7 @@ class AuthController extends Controller
 				->where("entity_type", User::class)
 				->firstOrFail();
 			if (!$token->isValid()) return abort(404);
+
 			$user = $token->entity;
 			$user->password = $request->password;
 			$user->save();
@@ -162,5 +163,46 @@ class AuthController extends Controller
 			DB::rollback();
 			return ["success" => false, "message" => $e->getMessage()];
 		}
+	}
+
+	public function socialiteLogin($provider)
+	{
+		$providers = config("auth.enabled_providers", []);
+		if (!in_array($provider, $providers)) return abort(404);
+		return Socialite::driver($provider)->redirect();
+	}
+
+	public function socialiteCallback($provider)
+	{
+		$providers = config("auth.enabled_providers", []);
+		if (!in_array($provider, $providers)) return abort(404);
+		$providerUser = Socialite::driver($provider)->user();
+
+		return $this->{$provider . "Callback"}($providerUser, $provider);
+	}
+
+	protected function githubCallback($providerUser, $provider)
+	{
+		$user = User::firstOrNew(
+			["provider" => $provider],
+			["provider_id" => $providerUser->id],
+		);
+
+		if (!$user->id) {
+			$tenant = Tenant::create([
+				"name" => "Tenant {$providerUser->nickname}",
+			]);
+
+			$user->name = $providerUser->name;
+			$user->email = $providerUser->nickname . "@{$provider}.socialite";
+			$user->password = md5(uniqid());
+			$user->tenant_id = $tenant->id;
+			$user->role = "admin";
+			$user->email_verified_at = now();
+			$user->save();
+		}
+
+		Auth::login($user);
+		return redirect("/admin");
 	}
 }

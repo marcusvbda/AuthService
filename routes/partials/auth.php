@@ -11,3 +11,5 @@ Route::get('forgot-my-password', [AuthController::class, 'forgotMyPassword'])->n
 Route::post('forgot-my-password', [AuthController::class, 'submitForgotMyPassword'])->name('submit.forgot.my.password');
 Route::get('renew-password/{token}', [AuthController::class, 'renewPassword'])->name('user.renew_password');
 Route::post('renew-password/{token}', [AuthController::class, 'submitRenewPassword'])->name('submit.renew_password');
+Route::get('socialite/login/{provider}', [AuthController::class, 'socialiteLogin'])->name('socialite.login');
+Route::get('socialite/callback/{provider}', [AuthController::class, 'socialiteCallback'])->name('socialite.callback');

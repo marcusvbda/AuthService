@@ -10,7 +10,7 @@
             Preencha os campos e corretamente para renovar suas credenciais.
         </small>
         <form v-on:submit.prevent="submit" class="vstack-form">
-            <div class="flex flex-col mt-2">
+            <div class="flex flex-col mt-8">
                 <label class="form-label">Senha</label>
                 <input
                     class="form-input"

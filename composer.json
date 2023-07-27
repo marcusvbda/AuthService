@@ -16,6 +16,7 @@
         "hashids/hashids": "^4.1",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^9.19",
+        "laravel/socialite": "^5.8",
         "laravel/tinker": "^2.0",
         "league/flysystem": "^3.0",
         "league/flysystem-sftp-v3": "^3.2",

@@ -9,17 +9,9 @@
         <small class="dark:text-neutral-300">
             Preencha os campos e verifique seu email para ter acesso ao sistema.
         </small>
+        <SocialiteButtons class="mt-5" />
         <form v-on:submit.prevent="submit" class="vstack-form">
-            <div class="flex mt-8 justify-center">
-                <el-radio-group v-model="form.plan">
-                    <el-radio-button label="lite">Lite</el-radio-button>
-                    <el-radio-button label="interprise">
-                        Interprise
-                    </el-radio-button>
-                    <el-radio-button label="premium">Premium</el-radio-button>
-                </el-radio-group>
-            </div>
-            <div class="flex flex-col mt-2">
+            <div class="flex flex-col mt-8">
                 <label class="form-label">Nome</label>
                 <input class="form-input" v-model="form.name" required />
             </div>
@@ -68,18 +60,22 @@
     </div>
 </template>
 <script>
+import SocialiteButtons from '../Theme/-socialite-buttons.vue';
+
 export default {
     data() {
         return {
             loading: false,
             form: {
-                plan: 'premium',
                 name: '',
                 email: '',
                 password: '',
                 confirm_password: '',
             },
         };
+    },
+    components: {
+        SocialiteButtons,
     },
     methods: {
         submit() {

@@ -76,11 +76,10 @@ class Users extends Resource
         return [
             "code" => ["label" => "#", "sortable_index" => "id", "width" => "80px"],
             "name" => ["label" => "Nome", "handler" => function ($row) {
-                return Vstack::makeLinesHtmlAppend($row->firstName, $row->name, $row->email);
+                $activate = $row->email_verified_at ? "Ativado em : " . $row->email_verified_at->format("d/m/Y") : "Ainda não ativado";
+                return Vstack::makeLinesHtmlAppend($row->firstName, $row->name, $row->email, $activate);
             }],
-            "email_verified_at" => ["label" => "Ativado em", "sortable_index" => "email_verified_at", "handler" => function ($row) {
-                return $row->email_verified_at ? $row->email_verified_at->format("d/m/Y") : "Ainda não ativado";
-            }],
+            "formatedProvider" => ["label" => "Provedor", "sortable_index" => "provider"],
             "access_level" => ["label" => "Nivel de acesso", "sortable" => false, "handler" => function ($row) {
                 $role = $row->role;
                 $group = "Acesso total";
@@ -97,6 +96,7 @@ class Users extends Resource
 
     public function fields()
     {
+        $isCreating = request()->page_type == "create";
         $content = request()?->content;
         $user = Auth::user();
 
@@ -112,8 +112,8 @@ class Users extends Resource
             "label" => "Email",
             "description" => "Este email será usado para acessar o sistema",
             "field" => "email",
-            "required" => true,
-            "disabled" => true,
+            "required" => ['required', 'email', 'unique:users,email,' . ($content?->id ?? null)],
+            "disabled" => !$isCreating,
         ]);
         $cards[] = new Card("Informações básicas", $fields);
 
@@ -130,14 +130,15 @@ class Users extends Resource
             $cards[] = new Card("Nivel de acesso", $fields);
         }
 
-        if ($user->hasPermissionTo("reset-credentials")) {
+        if ($user->hasPermissionTo("reset-credentials") && (!$content || $content?->provider === null)) {
+            $passRequired = $isCreating ? 'required' : 'nullable';
             $fields = [];
             $fields[] = new Text([
                 "label" => "Senha",
                 "type" => "password",
                 "description" => "Digite uma nova senha para este usuário, caso não queira alterar a senha, deixe este campo em branco",
                 "field" => "password",
-                'rules' => ['nullable', function ($att, $val, $fail) {
+                'rules' => [$passRequired, function ($att, $val, $fail) {
                     if ($val && !preg_match(User::PASS_HEGEX_VALIDATOR, $val)) {
                         $fail(User::PASS_VALIDATOR_MESSAGE);
                     }
@@ -148,7 +149,7 @@ class Users extends Resource
                 "type" => "password",
                 "description" => "Confirme a senha digitada acima",
                 "field" => "confirm_password",
-                'rules' => 'nullable|same:password'
+                'rules' => [$passRequired, 'same:password']
             ]);
 
             $cards[] = new Card("Credenciais", $fields);
@@ -158,6 +159,7 @@ class Users extends Resource
 
     public function storeMethod($id, $data)
     {
+        $isCreating = request()->page_type == "create";
         unset($data["data"]["confirm_password"]);
         $password = $data["data"]["password"];
         unset($data["data"]["password"]);
@@ -167,6 +169,10 @@ class Users extends Resource
         if ($password) {
             $model = $result["model"];
             $model->password = $password;
+            if ($isCreating) {
+                $model->email_verified_at = now();
+                $model->role = "user";
+            }
             $model->save();
         }
 

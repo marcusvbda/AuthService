@@ -11,6 +11,7 @@ class ExtraConfigData extends BaseMutator
 	{
 		$content["config"] = array_merge($content["config"], [
 			"description" => config("app.description"),
+			"enabled_providers" => config("auth.enabled_providers", []),
 		]);
 		return $content;
 	}

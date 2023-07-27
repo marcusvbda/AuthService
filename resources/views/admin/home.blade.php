@@ -11,7 +11,7 @@
     @php
         $user = Auth::user();
     @endphp
-    <div class="flex my-4">
+    <div class="flex mb-4 mt-8">
         <div class="w-full">
             <h1 class="text-5xl text-neutral-800 font-bold dark:text-neutral-200">Olá, {{ $user->firstName }}!</h1>
         </div>

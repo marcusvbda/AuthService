@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\DefaultEmail;
 use App\User;
-use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
 
 class DebugController extends Controller
 {
-    public function emailTest($method)
+    public function handler($method)
     {
         return $this->$method();
     }
@@ -25,7 +25,11 @@ class DebugController extends Controller
                 'activationLink' => $user->activationLink
             ]
         ]);
-        // Mail::to('bassalobre.vinicius@gmail.con')->send($email);
         return $email->render();
+    }
+
+    protected function socialite()
+    {
+        return Socialite::driver('github')->redirect();
     }
 }

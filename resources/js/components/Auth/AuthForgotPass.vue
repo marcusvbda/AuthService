@@ -10,7 +10,7 @@
             Verifique seu email para renovar sua senha.
         </small>
         <form v-on:submit.prevent="submit" class="vstack-form">
-            <div class="flex flex-col mt-2">
+            <div class="flex flex-col mt-8">
                 <label class="form-label">Email</label>
                 <input
                     class="form-input"

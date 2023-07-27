@@ -69,11 +69,6 @@ class User extends Authenticatable
 		]));
 	}
 
-	public function accessGroups()
-	{
-		return $this->belongsToMany(AccessGroup::class, "access_group_users", "user_id", "access_group_id");
-	}
-
 	public function renewToken()
 	{
 		return $this->morphOne(Token::class, 'entity')->where("type", "user_forgot_password_token");
@@ -87,12 +82,9 @@ class User extends Authenticatable
 	public function hasPermissionTo($permissionKey)
 	{
 		if ($this->role === "admin") return true;
-		return AccessGroup::join("access_group_users", "access_group_users.access_group_id", "=", "access_groups.id")
-			->join("access_group_permissions", "access_group_permissions.access_group_id", "=", "access_groups.id")
-			->join("permissions", "permissions.id", "=", "access_group_permissions.permission_id")
-			->where("access_group_users.user_id", $this->id)
-			->where("permissions.key", $permissionKey)
-			->count() > 0;
+		return $this->accessGroup()->whereHas("permissions", function ($query) use ($permissionKey) {
+			$query->where("key", $permissionKey);
+		})->count() > 0;
 	}
 
 	public function getFirstNameAttribute()
@@ -134,5 +126,10 @@ class User extends Authenticatable
 				'renewLink' => $this->renewLink
 			]
 		]));
+	}
+
+	public function getFormatedProviderAttribute()
+	{
+		return makeProviderLogo($this->provider);
 	}
 }

@@ -36,7 +36,7 @@
         ],
         [
             'position' => 'right',
-            'title' => $user->email,
+            'title' => $user->name,
             'visible' => true,
             'custom_style' => 'right: 0px;left:unset;',
             'items' => [

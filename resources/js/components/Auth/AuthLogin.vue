@@ -9,6 +9,7 @@
         <small class="dark:text-neutral-300">
             Bem Vindo de volta! Efetue o login para continuar
         </small>
+        <SocialiteButtons class="mt-5" />
         <form v-on:submit.prevent="checkUser" class="vstack-form">
             <div class="flex flex-col mt-8">
                 <label class="form-label">Email</label>
@@ -46,6 +47,7 @@
     </div>
 </template>
 <script>
+import SocialiteButtons from '../Theme/-socialite-buttons.vue';
 export default {
     data() {
         return {
@@ -55,6 +57,9 @@ export default {
                 password: '',
             },
         };
+    },
+    components: {
+        SocialiteButtons,
     },
     methods: {
         checkUser() {

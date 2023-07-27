@@ -11,3 +11,11 @@ a {
 .h-fit {
     height: fit-content;
 }
+
+.social-auth-buttons {
+    @apply flex flex-col w-full gap-3;
+
+    .social-auth-button {
+        @apply flex items-center justify-center w-full rounded-md text-white gap-3 bg-slate-500 hover:bg-slate-600 transition-all duration-200 py-2;
+    }
+}
