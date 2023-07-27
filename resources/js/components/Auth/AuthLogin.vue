@@ -32,7 +32,7 @@
                 <button class="vstack-btn primary">Efetuar Login</button>
                 <div class="flex justify-between">
                     <a href="/register" class="my-3 text-sm vstack-link">
-                        ainda não tenho uma conta
+                        Ainda não tenho uma conta
                     </a>
                     <a
                         href="/forgot-my-password"

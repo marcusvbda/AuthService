@@ -6,7 +6,6 @@ use App\Http\Mutators\{
 
 return [
 	"default_theme" => "dark",
-	"loading_gif" => "/assets/images/loading.gif",
 	"default_upload_route" => "/admin/upload",
 	"resource_export_extension" => "xlsx",
 	"extra_javascript_global_variables" => [

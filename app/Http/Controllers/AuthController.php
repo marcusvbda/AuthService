@@ -38,7 +38,7 @@ class AuthController extends Controller
 				return ["success" => true, "route" => '/admin'];
 			}
 		}
-		return ["success" => false, "message" => "Credenciais inválidas"];
+		return ["success" => false, "message" => "Credenciais inválidas !"];
 	}
 
 	public function submitRegister(Request $request)
@@ -50,8 +50,8 @@ class AuthController extends Controller
 				'name'     => 'required',
 				'email'    => 'required|email|unique:users',
 				'password' => ['required', function ($att, $val, $fail) {
-					if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/', $val)) {
-						$fail('A senha deve ter ao menos 1 caracter especial, 1 numeral e no minimo 6 caracteres');
+					if (!preg_match(User::PASS_HEGEX_VALIDATOR, $val)) {
+						$fail(User::PASS_VALIDATOR_MESSAGE);
 					}
 				}],
 				'plan'     => 'required',
@@ -75,7 +75,6 @@ class AuthController extends Controller
 			Messages::send("success", "Usuário cadastrado com sucesso, verifique seu email para confirmar seu acesso.");
 			return ["success" => true, "route" => '/login'];
 		} catch (\Exception $e) {
-			Messages::send("error", "Erro ao cadastrar usuário, tente novamente mais tarde.");
 			DB::rollback();
 			return ["success" => false, "message" => $e->getMessage()];
 		}
@@ -94,5 +93,74 @@ class AuthController extends Controller
 		$token->delete();
 		Auth::login($user);
 		return redirect("/admin");
+	}
+
+	public function forgotMyPassword()
+	{
+		return view("auth.forgot_my_password");
+	}
+
+	public function submitForgotMyPassword(Request $request)
+	{
+		try {
+			DB::beginTransaction();
+			$this->validate($request, [
+				'email' => 'required|email'
+			]);
+			$user = User::where("email", $request->email)->first();
+			if (!$user) return ["success" => false, "message" => "Email não encontrado !"];
+			$user->sendForgotPasswordEmail();
+			DB::commit();
+			Messages::send("success", "Email de renovação de senha enviado com sucesso !");
+			return ["success" => true, "message" => "Email enviado com sucesso", "route" => "/login"];
+		} catch (\Exception $e) {
+			DB::rollback();
+			return ["success" => false, "message" => $e->getMessage()];
+		}
+	}
+
+	public function renewPassword($token)
+	{
+		$token = Token::where("value", $token)
+			->where("type", "user_forgot_password_token")
+			->where("entity_type", User::class)
+			->firstOrFail();
+		if (!$token->isValid()) return abort(404);
+		$user = $token->entity;
+		$tokenValue = $token->value;
+		return view("auth.renew_password", compact("user", "tokenValue"));
+	}
+
+	public function submitRenewPassword($token, Request $request)
+	{
+		try {
+			DB::beginTransaction();
+			Auth::logout();
+			$this->validate($request, [
+				'password' => ['required', function ($att, $val, $fail) {
+					if (!preg_match(User::PASS_HEGEX_VALIDATOR, $val)) {
+						$fail(User::PASS_VALIDATOR_MESSAGE);
+					}
+				}],
+				'confirm_password' => 'required|same:password'
+			]);
+
+			$token = Token::where("value", $token)
+				->where("type", "user_forgot_password_token")
+				->where("entity_type", User::class)
+				->firstOrFail();
+			if (!$token->isValid()) return abort(404);
+			$user = $token->entity;
+			$user->password = $request->password;
+			$user->save();
+			Auth::login($user);
+			$token->delete();
+			DB::commit();
+			Messages::send("success", "Senha alterada com sucesso !");
+			return ["success" => true, "route" => '/admin'];
+		} catch (\Exception $e) {
+			DB::rollback();
+			return ["success" => false, "message" => $e->getMessage()];
+		}
 	}
 }

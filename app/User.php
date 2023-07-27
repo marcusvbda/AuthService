@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Models\AccessGroup;
-use App\Http\Models\Permission;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -16,6 +15,9 @@ use Illuminate\Support\Facades\Mail;
 class User extends Authenticatable
 {
 	use SoftDeletes, Notifiable, hasCode;
+
+	public const PASS_HEGEX_VALIDATOR = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/';
+	public const PASS_VALIDATOR_MESSAGE = 'A senha deve ter ao menos 1 caracter especial, 1 numeral e no minimo 6 caracteres';
 
 	public $guarded = ['created_at'];
 	protected $dates = ['deleted_at'];
@@ -56,7 +58,7 @@ class User extends Authenticatable
 			"due_date" => $dueDate
 		]);
 		$this->save();
-		Mail::to('bassalobre.vinicius@gmail.con')->send(new DefaultEmail([
+		Mail::to($this->email)->send(new DefaultEmail([
 			'subject' => "Ativação de conta",
 			'view' => "emails.user_activation",
 			'with' => [
@@ -69,6 +71,11 @@ class User extends Authenticatable
 	public function accessGroups()
 	{
 		return $this->belongsToMany(AccessGroup::class, "access_group_users", "user_id", "access_group_id");
+	}
+
+	public function renewToken()
+	{
+		return $this->morphOne(Token::class, 'entity')->where("type", "user_forgot_password_token");
 	}
 
 	public function activationToken()
@@ -94,6 +101,32 @@ class User extends Authenticatable
 
 	public function getActivationLinkAttribute()
 	{
-		return route("user.activation", ["token" => $this->activationToken->value]);
+		return route("user.activation", ["token" => @$this->activationToken->value]);
+	}
+
+	public function getRenewLinkAttribute()
+	{
+		return route("user.renew_password", ["token" => @$this->renewToken->value]);
+	}
+
+	public function sendForgotPasswordEmail()
+	{
+		$this->renewToken()->delete();
+		$token = md5(uniqid());
+		$dueDate = now()->addHours(24);
+		$this->activationToken()->create([
+			"type" => "user_forgot_password_token",
+			"value" => $token,
+			"due_date" => $dueDate
+		]);
+		$this->save();
+		Mail::to($this->email)->send(new DefaultEmail([
+			'subject' => "Renovação de senha",
+			'view' => "emails.user_renew",
+			'with' => [
+				'firstName' => $this->firstName,
+				'renewLink' => $this->renewLink
+			]
+		]));
 	}
 }

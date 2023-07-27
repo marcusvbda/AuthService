@@ -54,7 +54,7 @@
                 <button class="vstack-btn primary">Efetuar cadastro</button>
                 <div class="flex justify-between">
                     <a href="/login" class="my-3 text-sm vstack-link">
-                        já tenho uma conta
+                        Já tenho uma conta
                     </a>
                     <a
                         href="/forgot-my-password"
