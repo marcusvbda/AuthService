@@ -205,4 +205,18 @@ class AuthController extends Controller
 		Auth::login($user);
 		return redirect("/admin");
 	}
+
+	public function choosePlan()
+	{
+		return view("auth.choose_plan");
+	}
+
+	public function submitChoosePlan(Request $request)
+	{
+		$user = Auth::user();
+		$user->plan = $request->plan;
+		$user->save();
+
+		return ["success" => true, "route" => "/admin"];
+	}
 }

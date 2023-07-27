@@ -103,6 +103,8 @@ class DefaultMigration extends Migration
 			$table->string('config');
 			$table->jsonb('data');
 		}, ["timestamps" => false, "softDeletes" => false]);
+
+		(new StartUpSeeder())->run();
 	}
 
 	public function down()

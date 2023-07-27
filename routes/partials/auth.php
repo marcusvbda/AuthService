@@ -13,3 +13,8 @@ Route::get('renew-password/{token}', [AuthController::class, 'renewPassword'])->
 Route::post('renew-password/{token}', [AuthController::class, 'submitRenewPassword'])->name('submit.renew_password');
 Route::get('socialite/login/{provider}', [AuthController::class, 'socialiteLogin'])->name('socialite.login');
 Route::get('socialite/callback/{provider}', [AuthController::class, 'socialiteCallback'])->name('socialite.callback');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('choose-a-plan', [AuthController::class, 'choosePlan'])->name('user.choose_plan');
+    Route::post('choose-a-plan', [AuthController::class, 'submitChoosePlan'])->name('user.choose_plan');
+});

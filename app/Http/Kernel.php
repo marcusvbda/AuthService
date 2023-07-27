@@ -19,7 +19,6 @@ class Kernel extends HttpKernel
 		\Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
 		\App\Http\Middleware\TrimStrings::class,
 		\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-		// \Barryvdh\Cors\HandleCors::class
 	];
 
 	/**
@@ -37,7 +36,6 @@ class Kernel extends HttpKernel
 			\App\Http\Middleware\VerifyCsrfToken::class,
 			// \Illuminate\Routing\Middleware\SubstituteBindings::class,
 			\marcusvbda\vstack\Middleware\SendJSVarsToView::class,
-			// \App\Http\Middleware\setTimezone::class
 		],
 
 		'api' => [
@@ -68,7 +66,7 @@ class Kernel extends HttpKernel
 		'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
 		'cors' => \App\Http\Middleware\Cors::class,
 		'api.basic_auth' => \App\Http\Middleware\BasicAuthIntegrators::class,
-		'root-auth' => \App\Http\Middleware\RootAuth::class,
+		'plan-middleware' => \App\Http\Middleware\PlanMiddleware::class
 	];
 
 	/**
