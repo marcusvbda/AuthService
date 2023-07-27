@@ -64,12 +64,7 @@ class AccessGroups extends Resource
         return [
             "code" => ["label" => "#", "sortable_index" => "id", "width" => "80px"],
             "name" => ["label" => "Nome", "width" => "200px"],
-            "level" => ["label" => "Nível de liberdade", "sortable" => false, "handler" => function ($object) {
-                $totalPermissions = Permission::count();
-                $totalPermissionsByGroup = $object->permissions()->count();
-                $percentage = round(($totalPermissionsByGroup * 100) / $totalPermissions, 2);
-                return "<el-progress :text-inside='true' :stroke-width='26' :percentage='$percentage'></el-progress>";
-            }],
+            "level" => ["label" => "Nível de acesso", "sortable" => false, "handler" => fn ($r) => makeProgress($r->level)],
         ];
     }
 

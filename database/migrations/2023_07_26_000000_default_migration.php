@@ -60,6 +60,7 @@ class DefaultMigration extends Migration
 			$table->string('name');
 			$table->string('email');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
 			$table->string('password');
 			$table->string('role');
 			$table->string('plan');
@@ -76,11 +77,6 @@ class DefaultMigration extends Migration
 		}, [
 			"softDeletes" => false
 		]);
-
-		$this->createTable('access_group_users', function (Blueprint $table) {
-			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
-			$table = $this->addForeignKey($table, 'user_id', 'users', 'id');
-		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
 
 		$this->createTable('jobs', function (Blueprint $table) {
 			$table->string('queue')->index();
@@ -109,10 +105,13 @@ class DefaultMigration extends Migration
 
 	public function down()
 	{
-		Schema::dropIfExists('jobs');
-		Schema::dropIfExists('failed_jobs');
-		Schema::dropIfExists('resource_configs');
-		Schema::dropIfExists('users');
-		Schema::dropIfExists('tenants');
+		DB::statement('SET AUTOCOMMIT=0;');
+		DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+		$tables = DB::select('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = ?', ['public']);
+		foreach ($tables as $table) {
+			Schema::dropIfExists($table->tablename);
+		}
+		DB::statement('SET AUTOCOMMIT=1;');
+		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}
 }

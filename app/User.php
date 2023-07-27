@@ -24,6 +24,7 @@ class User extends Authenticatable
 	protected $appends = ['code'];
 	public  $casts = [
 		"data" => "json",
+		"email_verified_at" => "date"
 	];
 	public $relations = [];
 
@@ -107,6 +108,11 @@ class User extends Authenticatable
 	public function getRenewLinkAttribute()
 	{
 		return route("user.renew_password", ["token" => @$this->renewToken->value]);
+	}
+
+	public function accessGroup()
+	{
+		return $this->belongsTo(AccessGroup::class);
 	}
 
 	public function sendForgotPasswordEmail()

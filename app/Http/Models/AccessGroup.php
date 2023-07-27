@@ -20,4 +20,11 @@ class AccessGroup extends DefaultModel
 	{
 		return $this->permissions->pluck("id");
 	}
+
+	public function getLevelAttribute()
+	{
+		$totalPermissions = Permission::count();
+		$totalPermissionsByGroup = $this->permissions()->count();
+		return round(($totalPermissionsByGroup * 100) / $totalPermissions, 2);
+	}
 }

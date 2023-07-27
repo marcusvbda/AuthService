@@ -51,11 +51,15 @@ class StartUpSeeder extends Seeder
 			Permission::truncate();
 			AccessGroup::truncate();
 			DB::table("access_group_permissions")->truncate();
-			DB::table("access_group_users")->truncate();
 		}
 		Permission::updateOrCreate(["name" => "Visualizar permissões"], ["key" => "viewlist-permissions"]);
+
 		Permission::updateOrCreate(["name" => "Cadastrar grupos de acesso"], ["key" => "create-access-groups"]);
 		Permission::updateOrCreate(["name" => "Editar grupos de acesso"], ["key" => "edit-access-groups"]);
 		Permission::updateOrCreate(["name" => "Excluir grupos de acesso"], ["key" => "delete-access-groups"]);
+
+		Permission::updateOrCreate(["name" => "Cadastrar usuários"], ["key" => "create-users"]);
+		Permission::updateOrCreate(["name" => "Editar usuários"], ["key" => "edit-users"]);
+		Permission::updateOrCreate(["name" => "Excluir usuários"], ["key" => "delete-users"]);
 	}
 }
