@@ -4,12 +4,12 @@ namespace App\Http\Resources;
 
 use App\Http\Models\AccessGroup;
 use App\User;
-use Illuminate\Support\Facades\Auth;
 use marcusvbda\vstack\Fields\BelongsTo;
 use marcusvbda\vstack\Fields\Card;
 use marcusvbda\vstack\Fields\Text;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Vstack;
+use Auth;
 
 class Users extends Resource
 {
@@ -170,8 +170,10 @@ class Users extends Resource
             $model = $result["model"];
             $model->password = $password;
             if ($isCreating) {
+                $loggedUser = Auth::user();
                 $model->email_verified_at = now();
                 $model->role = "user";
+                $model->plan = $loggedUser->plan;
             }
             $model->save();
         }
