@@ -68,6 +68,15 @@ class DefaultMigration extends Migration
 			$table->rememberToken();
 		});
 
+		$this->createTable('tokens', function (Blueprint $table) {
+			$table->string('type');
+			$table->string('value');
+			$table->timestamp('due_date')->nullable();
+			$table->morphs("entity");
+		}, [
+			"softDeletes" => false
+		]);
+
 		$this->createTable('access_group_users', function (Blueprint $table) {
 			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
 			$table = $this->addForeignKey($table, 'user_id', 'users', 'id');

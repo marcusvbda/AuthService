@@ -26,4 +26,16 @@ class Tenant extends DefaultModel
 	{
 		return $this->hasMany(User::class);
 	}
+
+	public function accessGroups()
+	{
+		return $this->hasMany(AccessGroup::class);
+	}
+
+	public function purge()
+	{
+		$this->accessGroups()->forceDelete();
+		$this->users()->forceDelete();
+		$this->forceDelete();
+	}
 }

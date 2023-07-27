@@ -19,6 +19,11 @@ class Kernel extends ConsoleKernel
 			->runInBackground();
 
 		$schedule
+			->command('activate-user-tokens:clear')
+			->hourly()
+			->runInBackground();
+
+		$schedule
 			->command('optimize:clear')
 			->days(2)
 			->runInBackground();
@@ -29,7 +34,7 @@ class Kernel extends ConsoleKernel
 			->runInBackground();
 
 		$schedule
-			->command('queue:work --queue=resource-import,resource-export,mail-integrator,default')
+			->command('queue:work --queue=resource-import,alert-broadcasts,event-broadcasts,default')
 			->everyMinute()
 			->runInBackground();
 	}
