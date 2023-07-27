@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\{
-	LoginController,
-	// ForgotPasswordController
-};
+use App\Http\Controllers\AuthController;
 
-Route::get('login', [LoginController::class, 'index'])->name('login');
-Route::post('login', [LoginController::class, 'signin'])->name('signin');
-// Route::post('complete-login', [LoginController::class, 'completeLogin']);
+Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::post('login', [AuthController::class, 'signin'])->name('signin');
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('register', [AuthController::class, 'submitRegister'])->name('submit.register');
 // Route::get('esqueci-a-senha', [ForgotPasswordController::class, 'index']);
 // Route::post('esqueci-a-senha', [ForgotPasswordController::class, 'resetPassword']);
 // Route::get('esqueci-a-senha/{token}', [ForgotPasswordController::class, 'renewPassword']);

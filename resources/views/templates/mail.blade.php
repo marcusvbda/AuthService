@@ -175,7 +175,8 @@
                             <td
                                 style="font-weight: 400; text-align: left; font-size: 10px; color: #313131;line-height: 20px;">
                                 <p style="">A {{ config('app.name') }} respeita sua privacidade. Você está
-                                    recebendo esse e-mail exclusivamente.</p>
+                                    recebendo esse e-mail exclusivamente.
+                                </p>
                             </td>
                         </tr>
                         {{-- <tr>

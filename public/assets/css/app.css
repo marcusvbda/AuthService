@@ -1030,6 +1030,9 @@ video {
 .pb-3{
   padding-bottom: 0.75rem;
 }
+.pb-8{
+  padding-bottom: 2rem;
+}
 .pl-3{
   padding-left: 0.75rem;
 }
@@ -1410,8 +1413,6 @@ video {
   color: rgb(163 163 163 / var(--tw-text-opacity)) !important;
 }
 .vstack-crud-card .crud-card-body .table-crud .field-slot{
-  display: flex;
-  flex-direction: column;
   gap: 1.25rem;
   padding: 1rem;
 }
@@ -1592,6 +1593,11 @@ a{
 a:hover{
   --tw-text-opacity: 1;
   color: rgb(30 58 138 / var(--tw-text-opacity));
+}
+
+.h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
 }
 
 .hover\:bg-gray-100:hover{

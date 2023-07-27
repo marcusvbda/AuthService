@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Http\Models\AccessGroup;
+use App\Http\Models\Permission;
 use Illuminate\Database\Seeder;
 use App\User;
 use App\Http\Models\Tenant;
@@ -16,6 +18,7 @@ class StartUpSeeder extends Seeder
 		DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 		$this->createTenant();
 		$this->createUsers();
+		static::createPermissions(true);
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
@@ -33,12 +36,26 @@ class StartUpSeeder extends Seeder
 	{
 		DB::table("users")->truncate();
 		$user = new User();
-		$user->name = "root";
-		$user->email = "root@root.com";
-		$user->password = "roottoor";
+		$user->name = "vinicius";
+		$user->email = "bassalobre.vinicius@gmail.com";
+		$user->password = "bassalobre";
 		$user->tenant_id = $this->tenant->id;
 		$user->email_verified_at = now();
-		$user->role = "user";
+		$user->role = "admin";
 		$user->save();
+	}
+
+	public static function createPermissions($truncate = false)
+	{
+		if ($truncate) {
+			Permission::truncate();
+			AccessGroup::truncate();
+			DB::table("access_group_permissions")->truncate();
+			DB::table("access_group_users")->truncate();
+		}
+		Permission::updateOrCreate(["name" => "Visualizar permissões"], ["key" => "viewlist-permissions"]);
+		Permission::updateOrCreate(["name" => "Cadastrar grupos de acesso"], ["key" => "create-access-groups"]);
+		Permission::updateOrCreate(["name" => "Editar grupos de acesso"], ["key" => "edit-access-groups"]);
+		Permission::updateOrCreate(["name" => "Excluir grupos de acesso"], ["key" => "delete-access-groups"]);
 	}
 }

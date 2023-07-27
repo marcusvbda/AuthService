@@ -7,7 +7,7 @@
                 <img src="@yield('image')" class="max-w-md" />
             </div>
         </div>
-        <div class="bg-white w-full h-full order-2 md:w-1/2 p-4 flex items-center justify-center dark:bg-gray-800">
+        <div class="bg-white w-full h-full order-2 md:w-1/2 p-4 flex items-center justify-center dark:bg-gray-800 pb-8">
             @yield('form')
         </div>
     </main>

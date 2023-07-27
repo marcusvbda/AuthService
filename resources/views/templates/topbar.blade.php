@@ -1,5 +1,9 @@
 @php
     $user = Auth::user();
+    $canViewUsers = $user->hasPermissionTo('viewlist-users');
+    $canViewAccessGroups = $user->hasPermissionTo('viewlist-access-groups');
+    $canViewPermission = $user->hasPermissionTo('viewlist-permissions');
+    
     $items = [
         [
             'position' => 'center',
@@ -8,23 +12,33 @@
             'visible' => true,
             'items' => [],
         ],
-        // [
-        //     'position' => 'center',
-        //     'title' => 'Relatórios',
-        //     'visible' => $canViewReportLeads,
-        //     'items' => [
-        //         [
-        //             'title' => 'Relatório de Leads',
-        //             'route' => '/admin/relatorios/leads',
-        //             'visible' => $canViewReportLeads,
-        //         ],
-        //     ],
-        // ],
+        [
+            'position' => 'center',
+            'title' => 'Acesso',
+            'visible' => $canViewUsers || $canViewAccessGroups,
+            'items' => [
+                [
+                    'title' => 'Usuários',
+                    'route' => '/admin/users',
+                    'visible' => $canViewUsers,
+                ],
+                [
+                    'title' => 'Grupos de Acesso',
+                    'route' => '/admin/access-groups',
+                    'visible' => $canViewAccessGroups,
+                ],
+                [
+                    'title' => 'Permissões',
+                    'route' => '/admin/permissions',
+                    'visible' => $canViewPermission,
+                ],
+            ],
+        ],
         [
             'position' => 'right',
             'title' => $user->email,
             'visible' => true,
-            'custom_style' => 'left: -100px;',
+            'custom_style' => 'right: 0px;left:unset;',
             'items' => [
                 [
                     'title' => 'Sair',

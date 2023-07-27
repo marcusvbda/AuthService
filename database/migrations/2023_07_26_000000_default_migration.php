@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Database\Seeders\StartUpSeeder;
 
 class DefaultMigration extends Migration
 {
@@ -16,9 +17,9 @@ class DefaultMigration extends Migration
 			$table->collation = 'utf8mb4_unicode_ci';
 			$table->engine = 'InnoDB';
 			if ($options["id"]) $table->bigIncrements('id');
+			$callback($table);
 			if ($options["softDeletes"]) $table->softDeletes();
 			if ($options["timestamps"]) $table->timestamps();
-			$callback($table);
 		});
 	}
 
@@ -39,16 +40,38 @@ class DefaultMigration extends Migration
 			$table->jsonb('data')->nullable();
 		});
 
+		$this->createTable('permissions', function (Blueprint $table) {
+			$table->string('name');
+			$table->string('key');
+		}, ["timestamps" => false, "softDeletes" => false]);
+
+		$this->createTable('access_groups', function (Blueprint $table) {
+			$table->string('name');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+		});
+
+		$this->createTable('access_group_permissions', function (Blueprint $table) {
+			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
+			$table = $this->addForeignKey($table, 'permission_id', 'permissions', 'id');
+		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
+		StartUpSeeder::createPermissions();
+
 		$this->createTable('users', function (Blueprint $table) {
 			$table->string('name');
 			$table->string('email');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 			$table->string('password');
-			$table->string('role')->default('user');
+			$table->string('role');
+			$table->string('plan');
 			$table->jsonb('data')->nullable();
 			$table->timestamp('email_verified_at')->nullable();
 			$table->rememberToken();
 		});
+
+		$this->createTable('access_group_users', function (Blueprint $table) {
+			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
+			$table = $this->addForeignKey($table, 'user_id', 'users', 'id');
+		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
 
 		$this->createTable('jobs', function (Blueprint $table) {
 			$table->string('queue')->index();
