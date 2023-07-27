@@ -15,6 +15,9 @@ class PlanMiddleware extends Middleware
         if (!$user->plan) {
             return redirect()->route('user.choose_plan');
         }
+        if ($user->planIsExpired()) {
+            return redirect()->route('user.choose_plan');
+        }
         return $next($request);
     }
 }

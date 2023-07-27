@@ -24,19 +24,3 @@ Artisan::command('activate-user-tokens:clear', function () {
 		throw $th;
 	}
 })->describe('Clear expired tokens');
-
-
-Artisan::command('user-without-plan:clear', function () {
-	DB::beginTransaction();
-	try {
-		$users = User::whereNull("plan")->whereDate("created_at", "<", now()->subHours(24));
-		$users->get()->each(function ($user) {
-			$user->delete();
-		});
-		$this->comment('All user without plan cleared!');
-	} catch (\Throwable $th) {
-		DB::rollback();
-		$this->comment('Error clearing user without plan!');
-		throw $th;
-	}
-})->describe('Clear users without plan');

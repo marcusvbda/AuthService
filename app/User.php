@@ -24,7 +24,8 @@ class User extends Authenticatable
 	protected $appends = ['code'];
 	public  $casts = [
 		"data" => "json",
-		"email_verified_at" => "date"
+		"email_verified_at" => "date",
+		"plan_expires_at" => "date",
 	];
 	public $relations = [];
 
@@ -131,5 +132,16 @@ class User extends Authenticatable
 	public function getFormatedProviderAttribute()
 	{
 		return makeProviderLogo($this->provider);
+	}
+
+	public function planIsExpired()
+	{
+		if ($this->plan_expires_at !== null) {
+			$days = $this->plan_expires_at->diffInDays(now());
+			if ($days == 0 || now()->gt($this->plan_expires_at)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

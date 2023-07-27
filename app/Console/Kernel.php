@@ -19,11 +19,6 @@ class Kernel extends ConsoleKernel
 			->runInBackground();
 
 		$schedule
-			->command('user-without-plan:clear')
-			->hourly()
-			->runInBackground();
-
-		$schedule
 			->command('activate-user-tokens:clear')
 			->hourly()
 			->runInBackground();

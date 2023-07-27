@@ -68,6 +68,7 @@ class DefaultMigration extends Migration
 			$table->string('plan');
 			$table->jsonb('data')->nullable();
 			$table->timestamp('email_verified_at')->nullable();
+			$table->timestamp('plan_expires_at')->nullable();
 			$table->rememberToken();
 		});
 

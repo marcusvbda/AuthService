@@ -41,6 +41,11 @@
             'custom_style' => 'right: 0px;left:unset;',
             'items' => [
                 [
+                    'title' => 'Alterar plano',
+                    'route' => '/choose-a-plan',
+                    'visible' => true,
+                ],
+                [
                     'title' => 'Sair',
                     'route' => '/login',
                     'visible' => true,

@@ -2,7 +2,7 @@
     <div
         class="w-10/12 flex flex-col py-5"
         v-loading="loading"
-        element-loading-text="Verificando credenciais"
+        element-loading-text="Aguarde..."
     >
         <text-logo />
         <b class="mt-4 dark:text-neutral-200">Login</b>

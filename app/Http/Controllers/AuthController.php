@@ -214,7 +214,16 @@ class AuthController extends Controller
 	public function submitChoosePlan(Request $request)
 	{
 		$user = Auth::user();
-		$user->plan = $request->plan;
+		$this->validate($request, [
+			'plan' => 'required|in:test,basic,enterprise,premium'
+		]);
+		$plan = $request->plan;
+		$user->plan = $plan;
+		if ($plan == "test") {
+			$user->plan_expires_at = now()->addDays(15);
+		} else {
+			$user->plan_expires_at = null;
+		}
 		$user->save();
 
 		return ["success" => true, "route" => "/admin"];
