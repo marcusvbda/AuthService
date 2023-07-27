@@ -5,13 +5,13 @@
     $canViewPermission = $user->hasPermissionTo('viewlist-permissions');
     
     $items = [
-        [
-            'position' => 'center',
-            'title' => 'Dashboard',
-            'route' => '/admin/dashboard',
-            'visible' => true,
-            'items' => [],
-        ],
+        // [
+        //     'position' => 'center',
+        //     'title' => 'Dashboard',
+        //     'route' => '/admin/dashboard',
+        //     'visible' => true,
+        //     'items' => [],
+        // ],
         [
             'position' => 'center',
             'title' => 'Acesso',
