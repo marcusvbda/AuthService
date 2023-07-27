@@ -61,5 +61,6 @@ class StartUpSeeder extends Seeder
 		Permission::updateOrCreate(["name" => "Cadastrar usuários"], ["key" => "create-users"]);
 		Permission::updateOrCreate(["name" => "Editar usuários"], ["key" => "edit-users"]);
 		Permission::updateOrCreate(["name" => "Excluir usuários"], ["key" => "delete-users"]);
+		Permission::updateOrCreate(["name" => "Resetar senhas de usuários"], ["key" => "reset-credentials"]);
 	}
 }
