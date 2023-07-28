@@ -209,7 +209,7 @@ class AuthController extends Controller
 	public function choosePlan()
 	{
 		$user = Auth::user();
-		$days = $user->plan_expires_at->diffInDays(now());
+		$days = $user->plan_expires_at ? $user->plan_expires_at->diffInDays(now()) : 0;
 		if ($days > 15) return abort(404);
 		return view("auth.choose_plan");
 	}
@@ -224,8 +224,15 @@ class AuthController extends Controller
 		$user->plan = $plan;
 		if ($plan == "test") {
 			$user->plan_expires_at = now()->addDays(15);
+			Messages::send("success", "Plano de teste ativado por 15 dias !");
 		} else {
-			$user->plan_expires_at =  $user?->plan_expires_at ? $user->plan_expires_at->addMonths(1) : now()->addMonths(1);
+			$months = data_get($request, "payment.months", 1);
+			$currentExpiresAt = $user->plan_expires_at ?: now();
+			$user->plan_expires_at =  $currentExpiresAt->addMonths($months);
+
+			//IMPLEMENTAR O PAGAMENTO
+
+			Messages::send("success", "Plano {$plan} ativado por " . $months . ($months > 1 ? " meses" : " mês") . " !");
 		}
 		$user->save();
 
