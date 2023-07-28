@@ -65,7 +65,7 @@ class DefaultMigration extends Migration
 			$table->string('provider_id')->nullable();
 			$table->string('password');
 			$table->string('role')->nullable();
-			$table->string('plan');
+			$table->string('plan')->nullable();
 			$table->jsonb('data')->nullable();
 			$table->timestamp('email_verified_at')->nullable();
 			$table->timestamp('plan_expires_at')->nullable();
