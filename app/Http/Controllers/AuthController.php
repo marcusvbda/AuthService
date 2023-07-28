@@ -208,6 +208,9 @@ class AuthController extends Controller
 
 	public function choosePlan()
 	{
+		$user = Auth::user();
+		$days = $user->plan_expires_at->diffInDays(now());
+		if ($days > 15) return abort(404);
 		return view("auth.choose_plan");
 	}
 
@@ -222,7 +225,7 @@ class AuthController extends Controller
 		if ($plan == "test") {
 			$user->plan_expires_at = now()->addDays(15);
 		} else {
-			$user->plan_expires_at = null;
+			$user->plan_expires_at =  $user?->plan_expires_at ? $user->plan_expires_at->addMonths(1) : now()->addMonths(1);
 		}
 		$user->save();
 
