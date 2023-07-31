@@ -4,15 +4,24 @@
     $canViewAccessGroups = $user->hasPermissionTo('viewlist-access-groups');
     $canViewPermission = $user->hasPermissionTo('viewlist-permissions');
     $canViewCompetence = $user->hasPermissionTo('viewlist-competence');
+    $canViewCustomers = $user->hasPermissionTo('viewlist-customers');
+    $canViewProjects = $user->hasPermissionTo('viewlist-projects');
     
     $items = [
-        // [
-        //     'position' => 'center',
-        //     'title' => 'Dashboard',
-        //     'route' => '/admin/dashboard',
-        //     'visible' => true,
-        //     'items' => [],
-        // ],
+        [
+            'position' => 'center',
+            'title' => 'Projetos',
+            'route' => '/admin/projects',
+            'visible' => $canViewProjects,
+            'items' => [],
+        ],
+        [
+            'position' => 'center',
+            'title' => 'Clientes',
+            'route' => '/admin/customers',
+            'visible' => $canViewCustomers,
+            'items' => [],
+        ],
         [
             'position' => 'center',
             'title' => 'Parceiros',

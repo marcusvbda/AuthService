@@ -121,6 +121,29 @@ class DefaultMigration extends Migration
 			$table->jsonb('skills');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 		});
+
+		$this->createTable('customers', function (Blueprint $table) {
+			$table->string('name');
+			$table->string('doc_number')->nullable();
+			$table->string('website')->nullable();
+			$table->string('phone')->nullable();
+			$table->string('guide')->nullable();
+			$table->string('responsible_name')->nullable();
+			$table->string('responsible_email')->nullable();
+			$table->string('responsible_phone')->nullable();
+			$table->string('billing_category')->nullable();
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+		});
+
+		$this->createTable('projects', function (Blueprint $table) {
+			$table->string('name');
+			$table->date('start_date')->useCurrent();
+			$table->date('end_date')->nullable();
+			$table->string('board')->nullable();
+			$table->string('google_drive_url')->nullable();
+			$table = $this->addForeignKey($table, 'customer_id', 'customers', 'id');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+		});
 	}
 
 	public function down()

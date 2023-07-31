@@ -43,5 +43,15 @@ class StartUpSeeder extends Seeder
 		Permission::updateOrCreate(["name" => "Cadastrar competências"], ["key" => "create-competences"]);
 		Permission::updateOrCreate(["name" => "Editar competências"], ["key" => "edit-competences"]);
 		Permission::updateOrCreate(["name" => "Excluir competências"], ["key" => "delete-competences"]);
+
+		Permission::updateOrCreate(["name" => "Visualizar clientes"], ["key" => "viewlist-customers"]);
+		Permission::updateOrCreate(["name" => "Cadastrar clientes"], ["key" => "create-customers"]);
+		Permission::updateOrCreate(["name" => "Editar clientes"], ["key" => "edit-customers"]);
+		Permission::updateOrCreate(["name" => "Excluir clientes"], ["key" => "delete-customers"]);
+
+		Permission::updateOrCreate(["name" => "Visualizar projetos"], ["key" => "viewlist-projects"]);
+		Permission::updateOrCreate(["name" => "Cadastrar projetos"], ["key" => "create-projects"]);
+		Permission::updateOrCreate(["name" => "Editar projetos"], ["key" => "edit-projects"]);
+		Permission::updateOrCreate(["name" => "Excluir projetos"], ["key" => "delete-projects"]);
 	}
 }

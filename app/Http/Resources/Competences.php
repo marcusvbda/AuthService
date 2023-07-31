@@ -81,7 +81,7 @@ class Competences extends Resource
                     "label" => "Nome",
                     "field" => "name",
                     "required" => true,
-                    "description" => "Digite o nome do grupo de acesso",
+                    "description" => "Digite o nome da competência",
                 ]),
                 new Tags([
                     "label" => "Habilidades",
