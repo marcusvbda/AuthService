@@ -35,6 +35,11 @@ class Users extends Resource
         return false;
     }
 
+    public function canViewList()
+    {
+        return Auth::user()->hasPermissionTo('viewlist-users');
+    }
+
     public function canCreate()
     {
         return Auth::user()->hasPermissionTo('create-users');

@@ -3,6 +3,7 @@
     $canViewUsers = $user->hasPermissionTo('viewlist-users');
     $canViewAccessGroups = $user->hasPermissionTo('viewlist-access-groups');
     $canViewPermission = $user->hasPermissionTo('viewlist-permissions');
+    $canViewCompetence = $user->hasPermissionTo('viewlist-competence');
     
     $items = [
         // [
@@ -12,6 +13,18 @@
         //     'visible' => true,
         //     'items' => [],
         // ],
+        [
+            'position' => 'center',
+            'title' => 'Parceiros',
+            'visible' => $canViewCompetence,
+            'items' => [
+                [
+                    'title' => 'Competências',
+                    'route' => '/admin/competences',
+                    'visible' => $canViewCompetence,
+                ],
+            ],
+        ],
         [
             'position' => 'center',
             'title' => 'Acesso',

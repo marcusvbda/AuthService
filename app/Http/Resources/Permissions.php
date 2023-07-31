@@ -27,7 +27,7 @@ class Permissions extends Resource
 
     public function canViewList()
     {
-        return Auth::user()->hasPermissionTo('canview-permissions');
+        return Auth::user()->hasPermissionTo('viewlist-permissions');
     }
 
     public function canImport()

@@ -35,6 +35,12 @@ class DefaultMigration extends Migration
 
 	public function up()
 	{
+		$this->initFramework();
+		$this->initAppTables();
+	}
+
+	public function initFramework()
+	{
 		$this->createTable('tenants', function (Blueprint $table) {
 			$table->string('name');
 			$table->jsonb('data')->nullable();
@@ -106,6 +112,15 @@ class DefaultMigration extends Migration
 		}, ["timestamps" => false, "softDeletes" => false]);
 
 		(new StartUpSeeder())->run();
+	}
+
+	public function initAppTables()
+	{
+		$this->createTable('competences', function (Blueprint $table) {
+			$table->string('name');
+			$table->jsonb('skills');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+		});
 	}
 
 	public function down()

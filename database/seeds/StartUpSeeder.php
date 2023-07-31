@@ -28,13 +28,20 @@ class StartUpSeeder extends Seeder
 		}
 		Permission::updateOrCreate(["name" => "Visualizar permissões"], ["key" => "viewlist-permissions"]);
 
+		Permission::updateOrCreate(["name" => "Visualizar grupos de acesso"], ["key" => "viewlist-access-groups"]);
 		Permission::updateOrCreate(["name" => "Cadastrar grupos de acesso"], ["key" => "create-access-groups"]);
 		Permission::updateOrCreate(["name" => "Editar grupos de acesso"], ["key" => "edit-access-groups"]);
 		Permission::updateOrCreate(["name" => "Excluir grupos de acesso"], ["key" => "delete-access-groups"]);
 
+		Permission::updateOrCreate(["name" => "Visualizar usuários"], ["key" => "viewlist-users"]);
 		Permission::updateOrCreate(["name" => "Cadastrar usuários"], ["key" => "create-users"]);
 		Permission::updateOrCreate(["name" => "Editar usuários"], ["key" => "edit-users"]);
 		Permission::updateOrCreate(["name" => "Excluir usuários"], ["key" => "delete-users"]);
 		Permission::updateOrCreate(["name" => "Resetar senhas de usuários"], ["key" => "reset-credentials"]);
+
+		Permission::updateOrCreate(["name" => "Visualizar competências"], ["key" => "viewlist-competences"]);
+		Permission::updateOrCreate(["name" => "Cadastrar competências"], ["key" => "create-competences"]);
+		Permission::updateOrCreate(["name" => "Editar competências"], ["key" => "edit-competences"]);
+		Permission::updateOrCreate(["name" => "Excluir competências"], ["key" => "delete-competences"]);
 	}
 }

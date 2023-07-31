@@ -49,6 +49,11 @@ class AccessGroups extends Resource
         return Auth::user()->hasPermissionTo('delete-access-groups');
     }
 
+    public function canViewList()
+    {
+        return Auth::user()->hasPermissionTo('viewlist-access-groups');
+    }
+
     public function canViewReport()
     {
         return false;
