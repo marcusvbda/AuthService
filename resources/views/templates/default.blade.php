@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ mix('assets/css/app.css') }}">
     @yield('header')
     <link rel="icon" href="/favicon.ico" />
-    <title>@yield('title') | {{ config('app.name') }}</title>
+    <title>@yield('title') | {{ config('app.name') }} {{ config('app.description', '') }}</title>
 </head>
 <!-- carregamento do vstack mudará para display block afim de nao causar sensação de pos-rendering -->
 

@@ -118,7 +118,12 @@ class DefaultMigration extends Migration
 	{
 		$this->createTable('competences', function (Blueprint $table) {
 			$table->string('name');
-			$table->jsonb('skills');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+		});
+
+		$this->createTable('skills', function (Blueprint $table) {
+			$table->string('name');
+			$table = $this->addForeignKey($table, 'competence_id', 'competences', 'id');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 		});
 
@@ -144,6 +149,28 @@ class DefaultMigration extends Migration
 			$table = $this->addForeignKey($table, 'customer_id', 'customers', 'id');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 		});
+
+		$this->createTable('partners', function (Blueprint $table) {
+			$table->string('name');
+			$table->string('email')->nullable();
+			$table->string('phone')->nullable();
+			$table->string('portifolio')->nullable();
+			$table->integer('price_hour')->nullable();
+			$table->date('partner_since')->useCurrent();
+			$table->longtext('obs')->nullable();
+			$table->string('nfe_name')->nullable();
+			$table->string('doc_number')->nullable();
+			$table->string('contract_url')->nullable();
+			$table->date('contract_due_date')->nullable();
+			$table->longtext('bank_info')->nullable();
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+		});
+
+		$this->createTable('partner_skills', function (Blueprint $table) {
+			$table->string('name');
+			$table = $this->addForeignKey($table, 'skill_id', 'skills', 'id');
+			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id');
+		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
 	}
 
 	public function down()
