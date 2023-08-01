@@ -167,7 +167,6 @@ class DefaultMigration extends Migration
 		});
 
 		$this->createTable('partner_skills', function (Blueprint $table) {
-			$table->string('name');
 			$table = $this->addForeignKey($table, 'skill_id', 'skills', 'id');
 			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id');
 		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);

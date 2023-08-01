@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use marcusvbda\vstack\Fields\BelongsTo;
 use marcusvbda\vstack\Fields\Card;
 use marcusvbda\vstack\Fields\Text;
+use marcusvbda\vstack\Filters\FilterByOption;
 use marcusvbda\vstack\Resource;
+use marcusvbda\vstack\Vstack;
 
 class Partners extends Resource
 {
@@ -69,8 +71,12 @@ class Partners extends Resource
     {
         return [
             "code" => ["label" => "#", "sortable_index" => "id"],
-            "name" => ["label" => "Nome"],
-            "f_created_at_badge" => ["label" => "Nome", "width" => "200px", "sortable_index" => "created_at"],
+            "name" => ["label" => "Nome", "handler" => function ($row) {
+                $partnerSince = date("d/m/Y", strtotime($row->partner_since));
+                return Vstack::makeLinesHtmlAppend($row->name, $row->phone, "Parceiro desde $partnerSince", $row->email, $row->f_skill_competence);
+            }],
+            "f_price_hour" => ["label" => "Preço por hora", "sortable_index" => "price_hour"],
+            "f_created_at_badge" => ["label" => "Data do cadastro", "width" => "200px", "sortable_index" => "created_at"],
         ];
     }
 
@@ -101,9 +107,7 @@ class Partners extends Resource
                 ]),
                 new Text([
                     "label" => "Preço por hora",
-                    "prepend" => "R$ ",
-                    "type" => "number",
-                    "step" => "0.01",
+                    "type" => "currency",
                     "field" => "price_hour",
                     "default" => 0
                 ]),
@@ -115,9 +119,17 @@ class Partners extends Resource
                     "field" => "contract_url",
                 ]),
                 new Text([
+                    "label" => "Parceiro desde",
+                    "type" => "date",
+                    "field" => "partner_since",
+                    "default" => date("Y-m-d"),
+                    "rules" => ["required", "date"]
+                ]),
+                new Text([
                     "label" => "Vencimento do contrato",
                     "type" => "date",
                     "field" => "contract_due_date",
+                    "rules" => ["nullable", "date"]
                 ]),
             ]),
             new Card("Habilidades e outras informações", [
@@ -176,5 +188,35 @@ class Partners extends Resource
     public function beforeListSlot()
     {
         return view("admin.partners.before-list-slot");
+    }
+
+    public function filters()
+    {
+        return [
+            new FilterByOption([
+                "label" => "Habilidades",
+                "field" => "skill_ids",
+                "model" => Skill::class,
+                "multiple" => true,
+                "handle" => function ($query, $value) {
+                    return $query->whereHas("skills", function ($query) use ($value) {
+                        $values = explode(",", $value);
+                        $query->whereIn("skill_id", $values);
+                    });
+                }
+            ]),
+            new FilterByOption([
+                "label" => "Competências",
+                "field" => "competence_id",
+                "model" => Competence::class,
+                "multiple" => true,
+                "handle" => function ($query, $value) {
+                    return $query->whereHas("skills", function ($query) use ($value) {
+                        $values = explode(",", $value);
+                        $query->whereIn("competence_id", $values);
+                    });
+                }
+            ])
+        ];
     }
 }

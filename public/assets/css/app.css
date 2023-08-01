@@ -151,7 +151,7 @@ a:hover .mini-preview-wrapper {
   opacity: 0;
 }
 
-/* ! tailwindcss v3.3.2 | MIT License | https://tailwindcss.com */
+/* ! tailwindcss v3.3.3 | MIT License | https://tailwindcss.com */
 
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
@@ -320,6 +320,8 @@ optgroup,
 select,
 textarea {
   font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
   font-size: 100%; /* 1 */
   font-weight: inherit; /* 1 */
   line-height: inherit; /* 1 */
@@ -454,6 +456,14 @@ ul,
 menu {
   list-style: none;
   margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+
+dialog {
   padding: 0;
 }
 
@@ -759,9 +769,6 @@ video {
 }
 .mb-5{
   margin-bottom: 1.25rem;
-}
-.mb-8{
-  margin-bottom: 2rem;
 }
 .ml-0{
   margin-left: 0px;
@@ -1694,6 +1701,14 @@ video {
 :is(.dark .el-message-box .el-message-box__message p){
   --tw-text-opacity: 1;
   color: rgb(229 229 229 / var(--tw-text-opacity));
+}
+
+:is(.dark .el-input-group__prepend){
+  border-style: none;
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(245 245 245 / var(--tw-text-opacity));
 }
 
 body{
