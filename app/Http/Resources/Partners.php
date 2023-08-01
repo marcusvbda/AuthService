@@ -172,4 +172,9 @@ class Partners extends Resource
         $model->syncSkills($skill_ids);
         return $result;
     }
+
+    public function beforeListSlot()
+    {
+        return view("admin.partners.before-list-slot");
+    }
 }

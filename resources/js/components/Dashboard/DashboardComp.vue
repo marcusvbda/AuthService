@@ -1,7 +1,8 @@
 <template>
     <div class="flex flex-col md:flex-row gap-3 pt-3">
-        <CardQtyCustomer />
+        <CardQtyCustomers />
         <CardQtyProjects />
+        <CardQtyPartners />
     </div>
 </template>
 <script>
