@@ -105,11 +105,13 @@ class Demands extends Resource
                     new BelongsTo([
                         "label" => "Cliente",
                         "field" => "customer_id",
+                        "description" => "Selecione um cliente para ver seus projetos",
                         "model"   => Customer::class
                     ]),
                     new BelongsTo([
                         "label" => "Projeto",
                         "field" => "project_id",
+                        "description" => "Projetos do cliente selecionado",
                         "model"   => Project::class,
                         "entity_parent" => "customer_id",
                         "entity_parent_message" => "Selecione um cliente para selecionar um projeto",
