@@ -134,9 +134,4 @@ class Projects extends Resource
             ])
         ];
     }
-
-    public function beforeListSlot()
-    {
-        return view("admin.projects.before-list-slot");
-    }
 }

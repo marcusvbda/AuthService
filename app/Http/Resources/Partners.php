@@ -185,11 +185,6 @@ class Partners extends Resource
         return $result;
     }
 
-    public function beforeListSlot()
-    {
-        return view("admin.partners.before-list-slot");
-    }
-
     public function filters()
     {
         return [

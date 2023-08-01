@@ -126,9 +126,4 @@ class Customers extends Resource
             ])
         ];
     }
-
-    public function beforeListSlot()
-    {
-        return view("admin.customers.before-list-slot");
-    }
 }
