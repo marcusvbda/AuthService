@@ -23,9 +23,9 @@ class DefaultMigration extends Migration
 		});
 	}
 
-	public function addForeignKey($table, $fk, $refTable, $refColumn, $onDelete = 'restrict')
+	public function addForeignKey($table, $fk, $refTable, $refColumn, $nullable = false, $onDelete = 'restrict')
 	{
-		$table->unsignedBigInteger($fk)->nullable();
+		$table->unsignedBigInteger($fk)->nullable($nullable);
 		$table->foreign($fk)
 			->references($refColumn)
 			->on($refTable)
@@ -66,9 +66,10 @@ class DefaultMigration extends Migration
 			$table->string('name');
 			$table->string('email');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
-			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
+			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id', true);
 			$table->string('provider')->nullable();
 			$table->string('provider_id')->nullable();
+			$table->string('status');
 			$table->string('password');
 			$table->string('role')->nullable();
 			$table->string('plan')->nullable();
@@ -170,6 +171,22 @@ class DefaultMigration extends Migration
 			$table = $this->addForeignKey($table, 'skill_id', 'skills', 'id');
 			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id');
 		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
+
+		$this->createTable('demands', function (Blueprint $table) {
+			$table->string('name');
+			$table = $this->addForeignKey($table, 'customer_id', 'customers', 'id');
+			$table = $this->addForeignKey($table, 'project_id', 'projects', 'id');
+			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table->integer('budget')->default(0);
+			$table->jsonb('skills')->nullable();
+			$table->date('start_date')->useCurrent();
+			$table->date('end_date');
+			$table->string('briefing_url')->nullable();
+			$table->longtext('obs')->nullable();
+			$table->integer('delivery_rate')->default(0);
+			$table->integer('comunication_rate')->default(0);
+		});
 	}
 
 	public function down()

@@ -7,6 +7,7 @@
     $canViewCustomers = $user->hasPermissionTo('viewlist-customers');
     $canViewProjects = $user->hasPermissionTo('viewlist-projects');
     $canViewPartners = $user->hasPermissionTo('viewlist-partners');
+    $canViewDemands = $user->hasPermissionTo('viewlist-demands');
     
     $items = [
         [
@@ -14,6 +15,13 @@
             'title' => 'Projetos',
             'route' => '/admin/projects',
             'visible' => $canViewProjects,
+            'items' => [],
+        ],
+        [
+            'position' => 'center',
+            'title' => 'Demandas',
+            'route' => '/admin/demands',
+            'visible' => $canViewDemands,
             'items' => [],
         ],
         [

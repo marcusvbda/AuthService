@@ -58,5 +58,10 @@ class StartUpSeeder extends Seeder
 		Permission::updateOrCreate(["name" => "Cadastrar parceiros"], ["key" => "create-partners"]);
 		Permission::updateOrCreate(["name" => "Editar parceiros"], ["key" => "edit-partners"]);
 		Permission::updateOrCreate(["name" => "Excluir parceiros"], ["key" => "delete-partners"]);
+
+		Permission::updateOrCreate(["name" => "Visualizar demandas"], ["key" => "viewlist-demands"]);
+		Permission::updateOrCreate(["name" => "Cadastrar demandas"], ["key" => "create-demands"]);
+		Permission::updateOrCreate(["name" => "Editar demandas"], ["key" => "edit-demands"]);
+		Permission::updateOrCreate(["name" => "Excluir demandas"], ["key" => "delete-demands"]);
 	}
 }

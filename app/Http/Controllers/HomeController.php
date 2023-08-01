@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Customer;
+use App\Http\Models\Demand;
 use App\Http\Models\Partner;
 use App\Http\Models\Project;
 use Illuminate\Http\Request;
@@ -32,5 +33,10 @@ class HomeController extends Controller
 	protected function partnersQty()
 	{
 		return Partner::count();
+	}
+
+	protected function demandsQty()
+	{
+		return Demand::count();
 	}
 }
