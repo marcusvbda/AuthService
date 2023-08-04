@@ -3,17 +3,16 @@
 namespace App\Http\Resources;
 
 use App\Enums\DemandStatus;
-use App\Http\Models\Competence;
 use App\Http\Models\Customer;
 use App\Http\Models\Demand;
 use App\Http\Models\Partner;
 use App\Http\Models\Project;
 use App\Http\Models\Skill;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use marcusvbda\vstack\Fields\BelongsTo;
 use marcusvbda\vstack\Fields\Card;
 use marcusvbda\vstack\Fields\Text;
-use marcusvbda\vstack\Filters\FilterByOption;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Vstack;
 
@@ -86,6 +85,7 @@ class Demands extends Resource
 
     public function fields()
     {
+        $pageType = request()->page_type;
         return [
             new Card(
                 "Informações da demanda",
@@ -100,6 +100,8 @@ class Demands extends Resource
                         "label" => "Situação",
                         "field" => "status",
                         "description" => "Situação da demanda",
+                        "default" => $pageType === "create" ? DemandStatus::OPENED : "",
+                        "disabled" => $pageType === "create",
                         "options"   => Vstack::enumToOptions(DemandStatus::cases()),
                     ]),
                     new BelongsTo([
@@ -115,7 +117,65 @@ class Demands extends Resource
                         "model"   => Project::class,
                         "entity_parent" => "customer_id",
                         "entity_parent_message" => "Selecione um cliente para selecionar um projeto",
-                    ])
+                    ]),
+                    new Text([
+                        "label" => "Data início",
+                        "field" => "start_date",
+                        "type" => "date",
+                        "required" => true,
+                    ]),
+                    new Text([
+                        "label" => "Data de entrega",
+                        "field" => "end_date",
+                        "type" => "date",
+                    ]),
+                    new Text([
+                        "label" => "Url do briefing",
+                        "field" => "brifing_url",
+                    ]),
+                    new Text([
+                        "label" => "Budget",
+                        "field" => "budget",
+                        "type" => "currency",
+                        "default" => 0
+                    ]),
+                    new Text([
+                        "label" => "Observações",
+                        "field" => "obs",
+                        "type" => "textarea",
+                        "rows" => 6
+                    ]),
+                ]
+            ),
+            new Card(
+                "Informações do parceiro",
+                [
+                    new BelongsTo([
+                        "label" => "Habilidades",
+                        "field" => "skill_ids",
+                        "description" => "Selecione as habilidades para listar os parceiro as atende",
+                        "model" => Skill::class,
+                        "multiple" => true,
+                    ]),
+                    new BelongsTo([
+                        "label" => "Parceiro",
+                        "field" => "partner_id",
+                        "description" => "Parceiros que atendem as habilidades selecionadas",
+                        "model"   => Partner::class,
+                        "entity_parent" => "skill_ids",
+                        "entity_parent_message" => "Selecione as habilidades para selecionar um parceiro",
+                        "fetch_options_calllback" => function (Request $request, $query) {
+                            return $query->whereHas("skills", function ($query) use ($request) {
+                                $query->whereIn("skills.id", $request->skill_ids);
+                            });
+                        }
+                    ]),
+                    new Text([
+                        "label" => "Observações",
+                        "field" => "partner_obs",
+                        "type" => "textarea",
+                        "rows" => 6
+                    ]),
                 ]
             )
         ];
