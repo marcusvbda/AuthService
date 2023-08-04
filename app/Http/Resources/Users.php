@@ -101,7 +101,6 @@ class Users extends Resource
 
     public function fields()
     {
-        $isCreating = request()->page_type == "create";
         $content = request()?->content;
         $user = Auth::user();
 
@@ -118,7 +117,7 @@ class Users extends Resource
             "description" => "Este email será usado para acessar o sistema",
             "field" => "email",
             "required" => ['required', 'email', 'unique:users,email,' . ($content?->id ?? null)],
-            "disabled" => !$isCreating,
+            "disabled" => $this->isEditing(),
         ]);
         $cards[] = new Card("Informações básicas", $fields);
 
@@ -164,7 +163,6 @@ class Users extends Resource
 
     public function storeMethod($id, $data)
     {
-        $isCreating = request()->page_type == "create";
         unset($data["data"]["confirm_password"]);
         $password = $data["data"]["password"];
         unset($data["data"]["password"]);
@@ -174,7 +172,7 @@ class Users extends Resource
         if ($password) {
             $model = $result["model"];
             $model->password = $password;
-            if ($isCreating) {
+            if ($this->isCreating()) {
                 $loggedUser = Auth::user();
                 $model->email_verified_at = now();
                 $model->role = "user";

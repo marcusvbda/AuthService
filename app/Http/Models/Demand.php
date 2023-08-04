@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use App\Enums\DemandStatus;
 use marcusvbda\vstack\Models\DefaultModel;
 use marcusvbda\vstack\Models\Traits\hasCode;
 
@@ -13,8 +14,15 @@ class Demand extends DefaultModel
 	public $casts = [
 		"start_date" => "date",
 		"end_date" => "date",
-		"skills" => "array",
 	];
+
+	public static function boot()
+	{
+		parent::boot();
+		self::creating(function ($model) {
+			$model->status = DemandStatus::opened->name;
+		});
+	}
 
 	public function setBudgetAttribute($val)
 	{
@@ -24,5 +32,24 @@ class Demand extends DefaultModel
 	public function getBudgetAttribute($val)
 	{
 		return $val / 100;
+	}
+
+	public function skills()
+	{
+		return $this->belongsToMany(Skill::class, "demand_skills", "demand_id", "skill_id");
+	}
+
+	public function getSkillIdsAttribute()
+	{
+		return $this->skills()->pluck("id");
+	}
+
+	public function syncSkills($skill_ids)
+	{
+		$skills = [];
+		foreach ($skill_ids as $skill_id) {
+			$skills[$skill_id] = ["skill_id" => $skill_id];
+		}
+		$this->skills()->sync($skills);
 	}
 }

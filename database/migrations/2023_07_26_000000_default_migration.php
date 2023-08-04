@@ -176,17 +176,22 @@ class DefaultMigration extends Migration
 			$table->string('name');
 			$table = $this->addForeignKey($table, 'customer_id', 'customers', 'id');
 			$table = $this->addForeignKey($table, 'project_id', 'projects', 'id');
-			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id');
+			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id', true);
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table->text('status');
 			$table->integer('budget')->default(0);
-			$table->jsonb('skills')->nullable();
 			$table->date('start_date')->useCurrent();
 			$table->date('end_date');
 			$table->string('briefing_url')->nullable();
 			$table->longtext('obs')->nullable();
+			$table->longtext('partner_obs')->nullable();
 			$table->integer('delivery_rate')->default(0);
 			$table->integer('comunication_rate')->default(0);
 		});
+		$this->createTable('demand_skills', function (Blueprint $table) {
+			$table = $this->addForeignKey($table, 'skill_id', 'skills', 'id');
+			$table = $this->addForeignKey($table, 'demand_id', 'demands', 'id');
+		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
 	}
 
 	public function down()

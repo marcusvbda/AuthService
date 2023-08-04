@@ -95,6 +95,7 @@ class Projects extends Resource
                 new BelongsTo([
                     "label" => "Cliente",
                     "field" => "customer_id",
+                    "required" => true,
                     "model" => Customer::class
                 ]),
                 new Text([
