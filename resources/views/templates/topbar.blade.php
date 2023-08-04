@@ -13,23 +13,30 @@
         [
             'position' => 'center',
             'title' => 'Projetos',
-            'route' => '/admin/projects',
-            'visible' => $canViewProjects,
-            'items' => [],
-        ],
-        [
-            'position' => 'center',
-            'title' => 'Demandas',
-            'route' => '/admin/demands',
-            'visible' => $canViewDemands,
-            'items' => [],
-        ],
-        [
-            'position' => 'center',
-            'title' => 'Clientes',
-            'route' => '/admin/customers',
-            'visible' => $canViewCustomers,
-            'items' => [],
+            'visible' => $canViewProjects || $canViewDemands,
+            'items' => [
+                [
+                    'position' => 'center',
+                    'title' => 'Clientes',
+                    'route' => '/admin/customers',
+                    'visible' => $canViewCustomers,
+                    'items' => [],
+                ],
+                [
+                    'position' => 'center',
+                    'title' => 'Projetos',
+                    'route' => '/admin/projects',
+                    'visible' => $canViewProjects,
+                    'items' => [],
+                ],
+                [
+                    'position' => 'center',
+                    'title' => 'Demandas',
+                    'route' => '/admin/demands',
+                    'visible' => $canViewDemands,
+                    'items' => [],
+                ],
+            ],
         ],
         [
             'position' => 'center',
