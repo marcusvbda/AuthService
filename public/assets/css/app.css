@@ -1715,6 +1715,15 @@ video {
   color: rgb(245 245 245 / var(--tw-text-opacity));
 }
 
+:is(.dark .el-tabs .el-tabs__item:not(.is-active)){
+  --tw-text-opacity: 1;
+  color: rgb(163 163 163 / var(--tw-text-opacity));
+}
+:is(.dark .el-tabs .el-tabs__nav-wrap)::after{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity)) !important;
+}
+
 body{
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));

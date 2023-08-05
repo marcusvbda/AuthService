@@ -52,4 +52,19 @@ class Demand extends DefaultModel
 		}
 		$this->skills()->sync($skills);
 	}
+
+	public function customer()
+	{
+		return $this->belongsTo(Customer::class);
+	}
+
+	public function project()
+	{
+		return $this->belongsTo(Project::class);
+	}
+
+	public function getFStatusAttribute()
+	{
+		return DemandStatus::badge($this->status);
+	}
 }

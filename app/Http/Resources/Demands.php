@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use marcusvbda\vstack\Fields\BelongsTo;
 use marcusvbda\vstack\Fields\Card;
 use marcusvbda\vstack\Fields\Text;
+use marcusvbda\vstack\Filters\FilterByOption;
+use marcusvbda\vstack\Filters\FilterByText;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Vstack;
 
@@ -60,6 +62,11 @@ class Demands extends Resource
         return Auth::user()->hasPermissionTo('viewlist-demands');
     }
 
+    public function canView()
+    {
+        return Auth::user()->hasPermissionTo('viewlist-demands');
+    }
+
     public function canViewReport()
     {
         return false;
@@ -74,12 +81,21 @@ class Demands extends Resource
     {
         return [
             "code" => ["label" => "#", "sortable_index" => "id"],
-            // "name" => ["label" => "Nome", "handler" => function ($row) {
-            //     $demandsince = date("d/m/Y", strtotime($row->partner_since));
-            //     return Vstack::makeLinesHtmlAppend($row->name, $row->phone, "Parceiro desde $demandsince", $row->email, $row->f_skill_competence);
-            // }],
-            // "f_price_hour" => ["label" => "Preço por hora", "sortable_index" => "price_hour"],
-            // "f_created_at_badge" => ["label" => "Data do cadastro", "width" => "200px", "sortable_index" => "created_at"],
+            "name" => ["label" => "Nome", "handler" => function ($row) {
+                $customerName = $row->customer->name;
+                $projectName = $row->project->name;
+                return Vstack::makeLinesHtmlAppend($row->name, "Cliente : $customerName", "Projeto : $projectName");
+            }],
+            "start_date" => ["label" => "Início/Entrega", "handler" => function ($row) {
+                $startDate = $row->start_date->format("d/m/Y") ?? "Não definido";
+                $endDate = $row->end_date?->format("d/m/Y") ?? "Não definido";
+                return Vstack::makeLinesHtmlAppend("Início : $startDate", "Entrega :$endDate");
+            }],
+            "partner" => ["label" => "Status", "sortable" => false, "handler" => function ($row) {
+                return $row->partner->name ?? "Não definido";
+            }],
+            "f_status" => ["label" => "Parceiro", "sortable_index" => "status"],
+            "f_created_at_badge" => ["label" => "Data do cadastro", "width" => "200px", "sortable_index" => "created_at"],
         ];
     }
 
@@ -107,6 +123,7 @@ class Demands extends Resource
         $fields[] =  new BelongsTo([
             "label" => "Cliente",
             "field" => "customer_id",
+            "required" => true,
             "description" => "Selecione um cliente para ver seus projetos",
             "model"   => Customer::class
         ]);
@@ -199,5 +216,45 @@ class Demands extends Resource
         $model = $result["model"];
         $model->syncSkills($skill_ids);
         return $result;
+    }
+
+    public function filters()
+    {
+        return [
+            new FilterByText([
+                "label" => "Nome da demanda",
+                "field" => "name",
+            ]),
+            new FilterByOption([
+                "label" => "Cliente",
+                "field" => "customer_id",
+                "model" => Customer::class,
+                "multiple" => true,
+            ]),
+            new FilterByOption([
+                "label" => "Projeto",
+                "field" => "project_id",
+                "model" => Project::class,
+                "multiple" => true,
+            ]),
+            new FilterByOption([
+                "label" => "Parceiro",
+                "field" => "partner_id",
+                "model" => Partner::class,
+                "multiple" => true,
+            ]),
+            new FilterByOption([
+                "label" => "Status",
+                "field" => "status",
+                "options" => Vstack::enumToOptions(DemandStatus::cases(), true),
+                "multiple" => true,
+            ]),
+        ];
+    }
+
+    public function makeViewContent($data)
+    {
+        $viewDefaultContent = view('vStack::resources.partials._crud_content', $data);
+        return view("admin.demands.view", compact("viewDefaultContent"));
     }
 }
