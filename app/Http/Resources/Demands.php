@@ -257,4 +257,10 @@ class Demands extends Resource
         $viewDefaultContent = view('vStack::resources.partials._crud_content', $data);
         return view("admin.demands.view", compact("viewDefaultContent"));
     }
+
+    public function canViewAudits()
+    {
+        $auditsIsEnabled = parent::canViewAudits();
+        return $auditsIsEnabled;
+    }
 }

@@ -49,11 +49,6 @@ class Competences extends Resource
         return Auth::user()->hasPermissionTo('delete-competences');
     }
 
-    public function canViewAudits()
-    {
-        return Auth::user()->hasPermissionTo('view-audits-competences');
-    }
-
     public function canViewList()
     {
         return Auth::user()->hasPermissionTo('viewlist-competences');

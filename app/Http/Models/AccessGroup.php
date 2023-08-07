@@ -11,11 +11,6 @@ class AccessGroup extends DefaultModel
 	protected $table = "access_groups";
 	public $guarded = ["created_at"];
 
-	public static function isAuditable()
-	{
-		return true;
-	}
-
 	public function permissions()
 	{
 		return $this->belongsToMany(Permission::class, "access_group_permissions", "access_group_id", "permission_id");
