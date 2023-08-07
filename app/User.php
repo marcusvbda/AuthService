@@ -11,10 +11,12 @@ use App\Http\Models\Tenant;
 use App\Http\Models\Token;
 use App\Mail\DefaultEmail;
 use Illuminate\Support\Facades\Mail;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements AuditableContract
 {
-	use SoftDeletes, Notifiable, hasCode;
+	use SoftDeletes, Notifiable, hasCode, Auditable;
 
 	public const PASS_HEGEX_VALIDATOR = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/';
 	public const PASS_VALIDATOR_MESSAGE = 'A senha deve ter ao menos 1 caracter especial, 1 numeral e no minimo 6 caracteres';

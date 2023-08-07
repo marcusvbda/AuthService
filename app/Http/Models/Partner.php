@@ -14,6 +14,11 @@ class Partner extends DefaultModel
 		"contract_due_date" => "date",
 	];
 
+	public static function isAuditable()
+	{
+		return true;
+	}
+
 	public function setPriceHourAttribute($val)
 	{
 		$this->attributes["price_hour"] = intval($val * 100);

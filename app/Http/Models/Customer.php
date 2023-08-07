@@ -10,4 +10,9 @@ class Customer extends DefaultModel
 	use hasCode;
 	protected $table = "customers";
 	public $guarded = ["created_at"];
+
+	public static function isAuditable()
+	{
+		return true;
+	}
 }

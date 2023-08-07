@@ -163,9 +163,13 @@ class Users extends Resource
 
     public function storeMethod($id, $data)
     {
-        unset($data["data"]["confirm_password"]);
-        $password = $data["data"]["password"];
-        unset($data["data"]["password"]);
+        if (isset($data["data"]["confirm_password"])) {
+            unset($data["data"]["confirm_password"]);
+        }
+        $password = @$data["data"]["password"];
+        if (isset($data["data"]["password"])) {
+            unset($data["data"]["password"]);
+        }
 
         $result = parent::storeMethod($id, $data);
 

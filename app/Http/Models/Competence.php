@@ -19,6 +19,11 @@ class Competence extends DefaultModel
 		return $this->skills()->pluck("id")->toArray();
 	}
 
+	public static function isAuditable()
+	{
+		return true;
+	}
+
 	public function getSkillNamesStrAttribute()
 	{
 		return implode(", ", $this->skills()->pluck("name")->toArray());

@@ -114,7 +114,7 @@ class Demands extends Resource
                 "label" => "Situação",
                 "field" => "status",
                 "description" => "Situação da demanda",
-                "default" => $this->isCreating() ? DemandStatus::OPENED : "",
+                "default" => $this->isCreating() ? DemandStatus::opened : "",
                 "disabled" => $this->isCreating(),
                 "options"   => Vstack::enumToOptions(DemandStatus::cases()),
             ]);

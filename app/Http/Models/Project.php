@@ -15,6 +15,11 @@ class Project extends DefaultModel
 		"end_date" => "date",
 	];
 
+	public static function isAuditable()
+	{
+		return true;
+	}
+
 	public function customer()
 	{
 		return $this->belongsTo(Customer::class);

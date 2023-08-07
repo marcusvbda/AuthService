@@ -24,6 +24,11 @@ class Demand extends DefaultModel
 		});
 	}
 
+	public static function isAuditable()
+	{
+		return true;
+	}
+
 	public function setBudgetAttribute($val)
 	{
 		return $this->attributes["budget"] = intval($val * 100);

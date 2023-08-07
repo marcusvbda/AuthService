@@ -17,7 +17,12 @@ class Tenant extends DefaultModel
 		"data" => "object",
 	];
 
-	public static function hasTenant() //default true
+	public static function isAuditable()
+	{
+		return true;
+	}
+
+	public static function hasTenant()
 	{
 		return false;
 	}
