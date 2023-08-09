@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DemandStatus;
 use App\Http\Models\Customer;
 use App\Http\Models\Demand;
 use App\Http\Models\Partner;
 use App\Http\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-	public function index()
+	public function index(Request $request)
 	{
-		return view('admin.home');
+		$user = Auth::user();
+		$qtyDemands = $this->demandsQty($request, [DemandStatus::opened->name, DemandStatus::doing->name]);
+		return view('admin.home', compact('user', 'qtyDemands'));
 	}
 
 	public function getData($action, Request $request)
@@ -35,8 +39,11 @@ class HomeController extends Controller
 		return Partner::count();
 	}
 
-	protected function demandsQty()
+	protected function demandsQty(Request $request, $status = false)
 	{
+		if ($status) {
+			return Demand::whereIn('status', $status)->count();
+		}
 		return Demand::count();
 	}
 }

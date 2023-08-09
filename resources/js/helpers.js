@@ -6,3 +6,7 @@ Vue.prototype.$getEnabledIcons = function (enabled) {
 };
 
 Vue.prototype.$uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+Vue.prototype.$goToPage =  (page) => {
+    window.location.href = page;
+}

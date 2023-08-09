@@ -1,6 +1,7 @@
 <template>
     <div
-        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-3/12"
+        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-3/12 cursor-pointer"
+        @click="$goToPage('/admin/partners')"
     >
         <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-3">
             Parceiros
