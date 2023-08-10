@@ -102,6 +102,7 @@ class Competences extends Resource
         $skill_ids = $data["data"]["skill_ids"];
         unset($data["data"]["skill_ids"]);
         $result = parent::storeMethod($id, $data);
+        if (!$result["success"]) return $result;
         $model = $result["model"];
         $model->syncSkills($skill_ids);
         return $result;

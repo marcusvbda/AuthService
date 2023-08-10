@@ -48,20 +48,30 @@ class StartUpSeeder extends Seeder
 		Permission::updateOrCreate(["name" => "Cadastrar clientes"], ["key" => "create-customers"]);
 		Permission::updateOrCreate(["name" => "Editar clientes"], ["key" => "edit-customers"]);
 		Permission::updateOrCreate(["name" => "Excluir clientes"], ["key" => "delete-customers"]);
+		Permission::updateOrCreate(["name" => "Ver logs de clientes"], ["key" => "view-audits-customers"]);
 
 		Permission::updateOrCreate(["name" => "Visualizar projetos"], ["key" => "viewlist-projects"]);
 		Permission::updateOrCreate(["name" => "Cadastrar projetos"], ["key" => "create-projects"]);
 		Permission::updateOrCreate(["name" => "Editar projetos"], ["key" => "edit-projects"]);
 		Permission::updateOrCreate(["name" => "Excluir projetos"], ["key" => "delete-projects"]);
+		Permission::updateOrCreate(["name" => "Ver logs de projetos"], ["key" => "view-audits-projects"]);
 
 		Permission::updateOrCreate(["name" => "Visualizar parceiros"], ["key" => "viewlist-partners"]);
 		Permission::updateOrCreate(["name" => "Cadastrar parceiros"], ["key" => "create-partners"]);
 		Permission::updateOrCreate(["name" => "Editar parceiros"], ["key" => "edit-partners"]);
 		Permission::updateOrCreate(["name" => "Excluir parceiros"], ["key" => "delete-partners"]);
+		Permission::updateOrCreate(["name" => "Ver logs de parceiros"], ["key" => "view-audits-partners"]);
 
 		Permission::updateOrCreate(["name" => "Visualizar demandas"], ["key" => "viewlist-demands"]);
 		Permission::updateOrCreate(["name" => "Cadastrar demandas"], ["key" => "create-demands"]);
 		Permission::updateOrCreate(["name" => "Editar demandas"], ["key" => "edit-demands"]);
 		Permission::updateOrCreate(["name" => "Excluir demandas"], ["key" => "delete-demands"]);
+		Permission::updateOrCreate(["name" => "Ver logs de demandas"], ["key" => "view-audits-demands"]);
+
+		Permission::updateOrCreate(["name" => "Visualizar pagamentos"], ["key" => "viewlist-transactions"]);
+		Permission::updateOrCreate(["name" => "Cadastrar pagamentos"], ["key" => "create-transactions"]);
+		Permission::updateOrCreate(["name" => "Editar pagamentos"], ["key" => "edit-transactions"]);
+		Permission::updateOrCreate(["name" => "Excluir pagamentos"], ["key" => "delete-transactions"]);
+		Permission::updateOrCreate(["name" => "Ver logs de pagamentos"], ["key" => "view-audits-transactions"]);
 	}
 }

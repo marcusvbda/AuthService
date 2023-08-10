@@ -1139,10 +1139,6 @@ video {
   font-size: 2.25rem;
   line-height: 2.5rem;
 }
-.text-5xl{
-  font-size: 3rem;
-  line-height: 1;
-}
 .text-9xl{
   font-size: 8rem;
   line-height: 1;
@@ -1473,6 +1469,8 @@ video {
 }
 :is(.dark .vstack-crud-card){
   border-style: none;
+  --tw-bg-opacity: 1;
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity));
 }
 .vstack-crud-card .crud-card-header{
   --tw-bg-opacity: 1;

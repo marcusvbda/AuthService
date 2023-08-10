@@ -208,10 +208,24 @@ class DefaultMigration extends Migration
 			$table->integer('delivery_rate')->default(0);
 			$table->integer('comunication_rate')->default(0);
 		});
+
 		$this->createTable('demand_skills', function (Blueprint $table) {
 			$table = $this->addForeignKey($table, 'skill_id', 'skills', 'id');
 			$table = $this->addForeignKey($table, 'demand_id', 'demands', 'id');
 		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
+
+		$this->createTable('transactions', function (Blueprint $table) {
+			$table->string('description');
+			$table->string("ref");
+			$table->timestamp("due_date");
+			$table->integer('installment_amount');
+			$table->integer('total_amount');
+			$table->integer('qty_installments')->default(1);
+			$table = $this->addForeignKey($table, 'demand_id', 'demands', 'id');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table->text('status');
+			$table->integer('installment_id');
+		});
 	}
 
 	public function down()

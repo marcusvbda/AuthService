@@ -72,4 +72,9 @@ class Demand extends DefaultModel
 	{
 		return DemandStatus::badge($this->status);
 	}
+
+	public function transactions()
+	{
+		return $this->hasMany(Transaction::class);
+	}
 }

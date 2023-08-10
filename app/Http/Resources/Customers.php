@@ -130,6 +130,6 @@ class Customers extends Resource
     public function canViewAudits()
     {
         $auditsIsEnabled = parent::canViewAudits();
-        return $auditsIsEnabled;
+        return $auditsIsEnabled && Auth::user()->hasPermissionTo('view-audits-demands');
     }
 }

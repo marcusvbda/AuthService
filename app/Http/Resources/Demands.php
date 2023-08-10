@@ -62,11 +62,6 @@ class Demands extends Resource
         return Auth::user()->hasPermissionTo('viewlist-demands');
     }
 
-    public function canView()
-    {
-        return Auth::user()->hasPermissionTo('viewlist-demands');
-    }
-
     public function canViewReport()
     {
         return false;
@@ -212,7 +207,9 @@ class Demands extends Resource
         $skill_ids = $data["data"]["skill_ids"] ?? [];
         unset($data["data"]["skill_ids"]);
         $result = parent::storeMethod($id, $data);
-        if (!$result["success"]) return $result;
+        if (!$result["success"]) {
+            return $result;
+        }
         $model = $result["model"];
         $model->syncSkills($skill_ids);
         return $result;
@@ -252,15 +249,16 @@ class Demands extends Resource
         ];
     }
 
-    public function makeViewContent($data)
-    {
-        $viewDefaultContent = view('vStack::resources.partials._crud_content', $data);
-        return view("admin.demands.view", compact("viewDefaultContent"));
-    }
-
     public function canViewAudits()
     {
         $auditsIsEnabled = parent::canViewAudits();
-        return $auditsIsEnabled;
+        return $auditsIsEnabled && Auth::user()->hasPermissionTo('view-audits-demands');
+    }
+
+    public function relatedResources()
+    {
+        return [
+            new Transactions(["relation_fk" => "demand_id", 'order_by' => ['installment_id', 'asc']]),
+        ];
     }
 }
