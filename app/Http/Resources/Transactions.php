@@ -71,14 +71,13 @@ class Transactions extends Resource
         return [
             "code" => ["label" => "#", "sortable_index" => "id"],
             "description" => ["label" => "Descrição", "handler" => function ($row) {
-                return Vstack::makeLinesHtmlAppend($row->description, $row->ref);
-            }],
-            "installment_id" => ["label" => "Parcela", "sortable_index" => "installment_id"],
+                return Vstack::makeLinesHtmlAppend($row->description, $row->f_status, $row->ref);
+            }, "size" => "150px"],
             "f_due_date" => ["label" => "Data de Pagto", "sortable_index" => "due_date"],
+            "installment_id" => ["label" => "Parcela", "sortable_index" => "installment_id"],
             "f_total_amount" => ["label" => "Valor Parcela/Total", "sortable_index" => "installment_id", "handler" => function ($row) {
                 return Vstack::makeLinesHtmlAppend($row->f_installment_amount, $row->f_total_amount);
             }],
-            "f_status" => ["label" => "Status", "sortable_index" => "status"],
         ];
     }
 

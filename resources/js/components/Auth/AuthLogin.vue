@@ -32,9 +32,9 @@
             <div class="flex flex-col mt-3">
                 <button class="vstack-btn primary">Efetuar Login</button>
                 <div class="flex justify-between">
-                    <a href="/register" class="my-3 text-sm vstack-link">
+                    <!-- <a href="/register" class="my-3 text-sm vstack-link">
                         Ainda não tenho uma conta
-                    </a>
+                    </a> -->
                     <a
                         href="/forgot-my-password"
                         class="my-3 text-sm vstack-link"

@@ -1,6 +1,5 @@
 <?php
 
-use Database\Seeders\MigrateOldDB;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -40,7 +39,6 @@ class DefaultMigration extends Migration
 		$this->initFramework();
 		$this->initAppTables();
 		(new StartUpSeeder())->run();
-		(new MigrateOldDB())->run();
 	}
 
 	public function initFramework()
@@ -88,17 +86,21 @@ class DefaultMigration extends Migration
 			$table->string('name');
 			$table->string('email');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
-			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id', true);
+			$table->string('role')->default("user");
 			$table->string('provider')->nullable();
 			$table->string('provider_id')->nullable();
 			$table->string('password');
-			$table->string('role')->nullable();
 			$table->string('plan')->nullable();
 			$table->jsonb('data')->nullable();
 			$table->timestamp('email_verified_at')->nullable();
 			$table->timestamp('plan_expires_at')->nullable();
 			$table->rememberToken();
 		});
+
+		$this->createTable('access_group_users', function (Blueprint $table) {
+			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
+			$table = $this->addForeignKey($table, 'user_id', 'users', 'id');
+		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
 
 		$this->createTable('tokens', function (Blueprint $table) {
 			$table->string('type');

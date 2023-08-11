@@ -11,6 +11,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use marcusvbda\vstack\Services\Messages;
 use Laravel\Socialite\Facades\Socialite;
+// use marcusvbda\vstack\Notifications\Message;
 
 class AuthController extends Controller
 {
@@ -20,11 +21,49 @@ class AuthController extends Controller
 		return view("auth.login");
 	}
 
-	public function register()
-	{
-		Auth::logout();
-		return view("auth.register");
-	}
+	// public function register()
+	// {
+	// 	Auth::logout();
+	// 	return view("auth.register");
+	// }
+
+	// public function submitRegister(Request $request)
+	// {
+	// 	try {
+	// 		DB::beginTransaction();
+	// 		Auth::logout();
+	// 		$this->validate($request, [
+	// 			'name'     => 'required',
+	// 			'email'    => 'required|email|unique:users',
+	// 			'password' => ['required', function ($att, $val, $fail) {
+	// 				if (!preg_match(User::PASS_HEGEX_VALIDATOR, $val)) {
+	// 					$fail(User::PASS_VALIDATOR_MESSAGE);
+	// 				}
+	// 			}],
+	// 			'confirm_password' => 'required|same:password'
+	// 		]);
+
+	// 		$tenant = Tenant::create([
+	// 			"name" => "Tenant {$request->name}",
+	// 		]);
+
+	// 		$user = new User();
+	// 		$user->name = $request->name;
+	// 		$user->role = "admin";
+	// 		$user->email = $request->email;
+	// 		$user->tenant_id = $tenant->id;
+	// 		$user->plan = $request->plan;
+	// 		$user->password = $request->password;
+	// 		$user->save();
+	// 		$user->sendConfirmationEmail();
+	// 		DB::commit();
+	// 		Messages::send("success", "Usuário cadastrado com sucesso, verifique seu email para confirmar seu acesso.");
+	// 		return ["success" => true, "route" => '/login'];
+	// 	} catch (\Exception $e) {
+	// 		DB::rollback();
+	// 		return ["success" => false, "message" => $e->getMessage()];
+	// 	}
+	// }
 
 	public function signin(Request $request)
 	{
@@ -40,44 +79,6 @@ class AuthController extends Controller
 			}
 		}
 		return ["success" => false, "message" => "Credenciais inválidas !"];
-	}
-
-	public function submitRegister(Request $request)
-	{
-		try {
-			DB::beginTransaction();
-			Auth::logout();
-			$this->validate($request, [
-				'name'     => 'required',
-				'email'    => 'required|email|unique:users',
-				'password' => ['required', function ($att, $val, $fail) {
-					if (!preg_match(User::PASS_HEGEX_VALIDATOR, $val)) {
-						$fail(User::PASS_VALIDATOR_MESSAGE);
-					}
-				}],
-				'confirm_password' => 'required|same:password'
-			]);
-
-			$tenant = Tenant::create([
-				"name" => "Tenant {$request->name}",
-			]);
-
-			$user = new User();
-			$user->name = $request->name;
-			$user->role = "admin";
-			$user->email = $request->email;
-			$user->tenant_id = $tenant->id;
-			$user->plan = $request->plan;
-			$user->password = $request->password;
-			$user->save();
-			$user->sendConfirmationEmail();
-			DB::commit();
-			Messages::send("success", "Usuário cadastrado com sucesso, verifique seu email para confirmar seu acesso.");
-			return ["success" => true, "route" => '/login'];
-		} catch (\Exception $e) {
-			DB::rollback();
-			return ["success" => false, "message" => $e->getMessage()];
-		}
 	}
 
 	public function userActivation($token)
@@ -183,59 +184,67 @@ class AuthController extends Controller
 
 	protected function githubCallback($providerUser, $provider)
 	{
-		$user = User::firstOrNew(
-			["provider" => $provider],
-			["provider_id" => $providerUser->id],
-		);
+		// $user = User::firstOrNew(
+		// 	["provider" => $provider],
+		// 	["provider_id" => $providerUser->id],
+		// );
 
-		if (!$user->id) {
-			$tenant = Tenant::create([
-				"name" => "Tenant {$providerUser->nickname}",
-			]);
-
-			$user->name = $providerUser->name;
-			$user->email = $providerUser->nickname . "@{$provider}.socialite";
-			$user->password = md5(uniqid());
-			$user->tenant_id = $tenant->id;
-			$user->role = "admin";
-			$user->email_verified_at = now();
-			$user->save();
+		$user = User::where("provider", $provider)->where("provider_id", $providerUser->id)->first();
+		if (!$user) {
+			Messages::send("error", "Usuário não encontrado !");
+			return redirect("/login");
 		}
+
+		// if (!$user->id) {
+		// 	$tenant = Tenant::create([
+		// 		"name" => "Tenant {$providerUser->nickname}",
+		// 	]);
+
+		// 	$user->name = $providerUser->name;
+		// 	$user->email = $providerUser->nickname . "@{$provider}.socialite";
+		// 	$user->password = md5(uniqid());
+		// 	$user->tenant_id = $tenant->id;
+		// 	$user->role = "admin";
+		// 	// $user->plan = null;
+		// 	$user->plan = "premium";
+		// 	$user->email_verified_at = now();
+		// 	$user->save();
+		// }
 
 		Auth::login($user);
 		return redirect("/admin");
 	}
 
-	public function choosePlan()
-	{
-		$user = Auth::user();
-		$days = $user->plan_expires_at ? $user->plan_expires_at->diffInDays(now()) : 0;
-		if ($days > 15) return abort(404);
-		return view("auth.choose_plan");
-	}
+	// public function choosePlan()
+	// {
+	// 	$user = Auth::user();
+	// 	$days = $user->plan_expires_at ? $user->plan_expires_at->diffInDays(now()) : 0;
+	// 	if ($days > 15) return abort(404);
+	// 	return view("auth.choose_plan");
+	// }
 
-	public function submitChoosePlan(Request $request)
-	{
-		$user = Auth::user();
-		$this->validate($request, [
-			'plan' => 'required|in:test,basic,enterprise,premium'
-		]);
-		$plan = $request->plan;
-		$user->plan = $plan;
-		if ($plan == "test") {
-			$user->plan_expires_at = now()->addDays(15);
-			Messages::send("success", "Plano de teste ativado por 15 dias !");
-		} else {
-			$months = data_get($request, "payment.months", 1);
-			$currentExpiresAt = $user->plan_expires_at ?: now();
-			$user->plan_expires_at =  $currentExpiresAt->addMonths($months);
+	// public function submitChoosePlan(Request $request)
+	// {
+	// 	$user = Auth::user();
+	// 	$this->validate($request, [
+	// 		'plan' => 'required|in:test,basic,enterprise,premium'
+	// 	]);
+	// 	$plan = $request->plan;
+	// 	$user->plan = $plan;
+	// 	if ($plan == "test") {
+	// 		$user->plan_expires_at = now()->addDays(15);
+	// 		Messages::send("success", "Plano de teste ativado por 15 dias !");
+	// 	} else {
+	// 		$months = data_get($request, "payment.months", 1);
+	// 		$currentExpiresAt = $user->plan_expires_at ?: now();
+	// 		$user->plan_expires_at =  $currentExpiresAt->addMonths($months);
 
-			//IMPLEMENTAR O PAGAMENTO
+	// 		//IMPLEMENTAR O PAGAMENTO
 
-			Messages::send("success", "Plano {$plan} ativado por " . $months . ($months > 1 ? " meses" : " mês") . " !");
-		}
-		$user->save();
+	// 		Messages::send("success", "Plano {$plan} ativado por " . $months . ($months > 1 ? " meses" : " mês") . " !");
+	// 	}
+	// 	$user->save();
 
-		return ["success" => true, "route" => "/admin"];
-	}
+	// 	return ["success" => true, "route" => "/admin"];
+	// }
 }

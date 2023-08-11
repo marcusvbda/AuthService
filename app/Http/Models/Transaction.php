@@ -32,6 +32,11 @@ class Transaction extends DefaultModel
 		});
 	}
 
+	public function demand()
+	{
+		return $this->belongsTo(Demand::class, "demand_id");
+	}
+
 	public static function isAuditable()
 	{
 		return true;

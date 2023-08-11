@@ -42,6 +42,16 @@ class User extends Authenticatable implements AuditableContract
 		});
 	}
 
+	public function accessGroups()
+	{
+		return $this->belongsToMany(AccessGroup::class, "access_group_users", "user_id", "access_group_id");
+	}
+
+	public function getAccessGroupIdsAttribute()
+	{
+		return $this->accessGroups->pluck("id");
+	}
+
 	public function setPasswordAttribute($val)
 	{
 		$this->attributes["password"] = bcrypt($val);
@@ -84,8 +94,8 @@ class User extends Authenticatable implements AuditableContract
 
 	public function hasPermissionTo($permissionKey)
 	{
-		if ($this->role === "admin") return true;
-		return $this->accessGroup()->whereHas("permissions", function ($query) use ($permissionKey) {
+		if ($this->role === "root") return true;
+		return $this->accessGroups()->whereHas("permissions", function ($query) use ($permissionKey) {
 			$query->where("key", $permissionKey);
 		})->count() > 0;
 	}
@@ -103,11 +113,6 @@ class User extends Authenticatable implements AuditableContract
 	public function getRenewLinkAttribute()
 	{
 		return route("user.renew_password", ["token" => @$this->renewToken->value]);
-	}
-
-	public function accessGroup()
-	{
-		return $this->belongsTo(AccessGroup::class);
 	}
 
 	public function sendForgotPasswordEmail()
@@ -136,14 +141,14 @@ class User extends Authenticatable implements AuditableContract
 		return makeProviderLogo($this->provider);
 	}
 
-	public function planIsExpired()
-	{
-		if ($this->plan_expires_at !== null) {
-			$days = $this->plan_expires_at->diffInDays(now());
-			if ($days == 0 || now()->gt($this->plan_expires_at)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	// public function planIsExpired()
+	// {
+	// 	if ($this->plan_expires_at !== null) {
+	// 		$days = $this->plan_expires_at->diffInDays(now());
+	// 		if ($days == 0 || now()->gt($this->plan_expires_at)) {
+	// 			return true;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
 }

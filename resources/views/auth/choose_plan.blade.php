@@ -1,4 +1,4 @@
-@php
+{{-- @php
     $withoutImage = true;
     $user = Auth::user();
     $plan = $user->plan;
@@ -10,4 +10,4 @@
 @section('form')
     <auth-plan plan="{{ $plan }}" :expired='@json($expired)'>
     </auth-plan>
-@endsection
+@endsection --}}

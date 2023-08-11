@@ -1,4 +1,4 @@
-@php
+{{-- @php
     $user = Auth::user();
 @endphp
 @if ($user->plan_expires_at)
@@ -15,4 +15,4 @@
             </p>
         </div>
     @endif
-@endif
+@endif --}}

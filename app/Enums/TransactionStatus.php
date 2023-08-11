@@ -22,4 +22,10 @@ enum TransactionStatus: string
         };
         return makeBadge($type, $case->value);
     }
+
+    public static function translate($name)
+    {
+        $case = collect(TransactionStatus::cases())->where("name", $name)->first();
+        return $case->value;
+    }
 }

@@ -9,8 +9,16 @@
     $canViewPartners = $user->hasPermissionTo('viewlist-partners');
     $canViewDemands = $user->hasPermissionTo('viewlist-demands');
     $canViewSquads = $user->hasPermissionTo('viewlist-squads');
+    $canViewTransactions = $user->hasPermissionTo('viewlist-transactions');
     
     $items = [
+        [
+            'position' => 'center',
+            'title' => 'Financeiro',
+            'route' => '/admin/financial',
+            'visible' => $canViewTransactions,
+            'items' => [],
+        ],
         [
             'position' => 'center',
             'title' => 'Projetos',

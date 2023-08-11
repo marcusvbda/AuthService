@@ -57,6 +57,11 @@ class Demands extends Resource
         return Auth::user()->hasPermissionTo('delete-demands');
     }
 
+    public function canView()
+    {
+        return Auth::user()->hasPermissionTo('view-demands');
+    }
+
     public function canViewList()
     {
         return Auth::user()->hasPermissionTo('viewlist-demands');

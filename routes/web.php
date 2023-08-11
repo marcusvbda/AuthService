@@ -11,7 +11,8 @@ if (config('app.env') === "homologation") {
 }
 
 require "partials/auth.php";
-Route::group(['middleware' => ['auth', 'plan-middleware']], function () {
+Route::group(['middleware' => ['auth']], function () {
+	// Route::group(['middleware' => ['auth', 'plan-middleware']], function () {
 	Route::group(['prefix' => "admin"], function () {
 		require "partials/home.php";
 	});

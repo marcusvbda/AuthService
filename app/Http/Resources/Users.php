@@ -127,7 +127,8 @@ class Users extends Resource
             $fields[] = new BelongsTo([
                 "label" => "Grupo de acesso",
                 "description" => "Selecione um grupo de acesso para este usuário",
-                "field" => "access_group_id",
+                "field" => "access_group_ids",
+                "multiple" => true,
                 "model" => AccessGroup::class
 
             ]);
@@ -135,7 +136,7 @@ class Users extends Resource
         }
 
         if ($user->hasPermissionTo("reset-credentials") && (!$content || $content?->provider === null)) {
-            $passRequired = $isCreating ? 'required' : 'nullable';
+            $passRequired = $this->isCreating() ? 'required' : 'nullable';
             $fields = [];
             $fields[] = new Text([
                 "label" => "Senha",
@@ -163,6 +164,11 @@ class Users extends Resource
 
     public function storeMethod($id, $data)
     {
+        $access_groups = [];
+        if (isset($data["data"]["access_group_ids"])) {
+            $access_groups = $data["data"]["access_group_ids"];
+            unset($data["data"]["access_group_ids"]);
+        }
         if (isset($data["data"]["confirm_password"])) {
             unset($data["data"]["confirm_password"]);
         }
@@ -172,18 +178,19 @@ class Users extends Resource
         }
 
         $result = parent::storeMethod($id, $data);
+        $model = $result["model"];
 
         if ($password) {
-            $model = $result["model"];
             $model->password = $password;
             if ($this->isCreating()) {
                 $loggedUser = Auth::user();
                 $model->email_verified_at = now();
-                $model->role = "user";
                 $model->plan = $loggedUser->plan;
             }
             $model->save();
         }
+
+        $model->accessGroups()->sync($access_groups);
 
         return $result;
     }
