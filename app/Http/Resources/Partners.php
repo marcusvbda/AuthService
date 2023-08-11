@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Models\Competence;
 use App\Http\Models\Partner;
 use App\Http\Models\Skill;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use marcusvbda\vstack\Fields\BelongsTo;
 use marcusvbda\vstack\Fields\Card;
@@ -73,7 +74,7 @@ class Partners extends Resource
             "code" => ["label" => "#", "sortable_index" => "id"],
             "name" => ["label" => "Nome", "handler" => function ($row) {
                 $partnerSince = date("d/m/Y", strtotime($row->partner_since));
-                return Vstack::makeLinesHtmlAppend($row->name, $row->phone, "Parceiro desde $partnerSince", $row->email, $row->f_skill_competence);
+                return Vstack::makeLinesHtmlAppend($row->name, $row->phone, "Parceiro desde $partnerSince", $row->f_skill_competence);
             }],
             "f_price_hour" => ["label" => "Preço por hora", "sortable_index" => "price_hour"],
             "f_created_at_badge" => ["label" => "Data do cadastro", "width" => "200px", "sortable_index" => "created_at"],
@@ -90,10 +91,11 @@ class Partners extends Resource
                     "required" => true,
                     "description" => "Digite o nome do parceiro",
                 ]),
-                new Text([
-                    "label" => "Email",
-                    "field" => "email",
-                    "description" => "Digite o email da parceiro",
+                new BelongsTo([
+                    "label" => "Usuário",
+                    "field" => "user_id",
+                    "description" => "Usuário vinculado a este parceiro",
+                    "model" => User::class,
                 ]),
                 new Text([
                     "label" => "Telefone",

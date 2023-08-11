@@ -15,7 +15,7 @@ class HomeController extends Controller
 	public function index(Request $request)
 	{
 		$user = Auth::user();
-		$qtyDemands = $this->demandsQty($request, [DemandStatus::opened->name, DemandStatus::doing->name]);
+		$qtyDemands = $this->demandsQty($request, [DemandStatus::open->name, DemandStatus::inprogress->name]);
 		return view('admin.home', compact('user', 'qtyDemands'));
 	}
 

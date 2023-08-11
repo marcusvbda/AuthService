@@ -75,22 +75,21 @@ class Demands extends Resource
     public function table()
     {
         return [
-            "id" => ["label" => "#", "sortable_index" => "id"],
+            "code" => ["label" => "#", "sortable_index" => "id"],
             "name" => ["label" => "Nome", "handler" => function ($row) {
                 $customerName = $row->customer->name;
                 $projectName = $row->project->name;
-                return Vstack::makeLinesHtmlAppend($row->name, "Cliente : $customerName", "Projeto : $projectName");
+                return Vstack::makeLinesHtmlAppend($row->name, $customerName, $projectName, $row->f_created_at);
             }],
             "start_date" => ["label" => "Início/Entrega", "handler" => function ($row) {
                 $startDate = $row->start_date->format("d/m/Y") ?? "Não definido";
                 $endDate = $row->end_date?->format("d/m/Y") ?? "Não definido";
-                return Vstack::makeLinesHtmlAppend("Início : $startDate", "Entrega :$endDate");
-            }],
-            "partner" => ["label" => "Status", "sortable" => false, "handler" => function ($row) {
+                return Vstack::makeLinesHtmlAppend($startDate, $endDate);
+            }, "size" => "200px"],
+            "partner" => ["label" => "Parceiro", "sortable" => false, "handler" => function ($row) {
                 return $row->partner->name ?? "Não definido";
-            }],
-            "f_status" => ["label" => "Parceiro", "sortable_index" => "status"],
-            "f_created_at_badge" => ["label" => "Data do cadastro", "width" => "200px", "sortable_index" => "created_at"],
+            }, "size" => "200px"],
+            "f_status" => ["label" => "Status", "sortable_index" => "status"],
         ];
     }
 
@@ -109,7 +108,7 @@ class Demands extends Resource
                 "label" => "Situação",
                 "field" => "status",
                 "description" => "Situação da demanda",
-                "default" => $this->isCreating() ? DemandStatus::opened : "",
+                "default" => $this->isCreating() ? DemandStatus::open : "",
                 "disabled" => $this->isCreating(),
                 "options"   => Vstack::enumToOptions(DemandStatus::cases()),
             ]);
@@ -182,13 +181,13 @@ class Demands extends Resource
             "field" => "partner_id",
             "description" => "Parceiros que atendem as habilidades selecionadas",
             "model"   => Partner::class,
-            "entity_parent" => "skill_ids",
-            "entity_parent_message" => "Selecione as habilidades para selecionar um parceiro",
-            "fetch_options_calllback" => function (Request $request, $query) {
-                return $query->whereHas("skills", function ($query) use ($request) {
-                    $query->whereIn("skills.id", $request->skill_ids);
-                });
-            }
+            // "entity_parent" => "skill_ids",
+            // "entity_parent_message" => "Selecione as habilidades para selecionar um parceiro",
+            // "fetch_options_calllback" => function (Request $request, $query) {
+            //     return $query->whereHas("skills", function ($query) use ($request) {
+            //         $query->whereIn("skills.id", $request->skill_ids);
+            //     });
+            // }
         ]);
 
         $fields[] =  new Text([

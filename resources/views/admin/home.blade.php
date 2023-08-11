@@ -1,3 +1,6 @@
+@php
+    use App\Enums\DemandStatus;
+@endphp
 @extends('templates.admin')
 @section('title', 'Página Inicial')
 @section('breadcrumb')
@@ -19,7 +22,7 @@
         $resource = ResourcesHelpers::find('demands');
         $report_mode = false;
         $only_table = true;
-        $extra_filters = ['status' => 'opened,doing'];
+        $extra_filters = ['status' => implode(',', [DemandStatus::open->name, DemandStatus::inprogress->name])];
     @endphp
     @if ($qtyDemands)
         {!! $resource->makeIndexContent(compact('resource', 'report_mode', 'only_table', 'extra_filters')) !!}

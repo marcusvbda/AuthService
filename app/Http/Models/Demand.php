@@ -20,7 +20,7 @@ class Demand extends DefaultModel
 	{
 		parent::boot();
 		self::creating(function ($model) {
-			$model->status = DemandStatus::opened->name;
+			$model->status = DemandStatus::open->name;
 		});
 	}
 
@@ -61,6 +61,11 @@ class Demand extends DefaultModel
 	public function customer()
 	{
 		return $this->belongsTo(Customer::class);
+	}
+
+	public function partner()
+	{
+		return $this->belongsTo(Partner::class);
 	}
 
 	public function project()

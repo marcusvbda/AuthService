@@ -1,5 +1,6 @@
 <?php
 
+use Database\Seeders\MigrateOldDB;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ class DefaultMigration extends Migration
 			$table->collation = 'utf8mb4_unicode_ci';
 			$table->engine = 'InnoDB';
 			if ($options["id"]) $table->bigIncrements('id');
+			$table->string('import_ref')->nullable();
 			$callback($table);
 			if ($options["softDeletes"]) $table->softDeletes();
 			if ($options["timestamps"]) $table->timestamps();
@@ -37,6 +39,8 @@ class DefaultMigration extends Migration
 	{
 		$this->initFramework();
 		$this->initAppTables();
+		(new StartUpSeeder())->run();
+		(new MigrateOldDB())->run();
 	}
 
 	public function initFramework()
@@ -60,7 +64,6 @@ class DefaultMigration extends Migration
 			$table->index([$morphPrefix . '_id', $morphPrefix . '_type']);
 		});
 
-
 		$this->createTable('tenants', function (Blueprint $table) {
 			$table->string('name');
 			$table->jsonb('data')->nullable();
@@ -80,7 +83,6 @@ class DefaultMigration extends Migration
 			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id');
 			$table = $this->addForeignKey($table, 'permission_id', 'permissions', 'id');
 		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
-		StartUpSeeder::createPermissions();
 
 		$this->createTable('users', function (Blueprint $table) {
 			$table->string('name');
@@ -89,7 +91,6 @@ class DefaultMigration extends Migration
 			$table = $this->addForeignKey($table, 'access_group_id', 'access_groups', 'id', true);
 			$table->string('provider')->nullable();
 			$table->string('provider_id')->nullable();
-			$table->string('status');
 			$table->string('password');
 			$table->string('role')->nullable();
 			$table->string('plan')->nullable();
@@ -131,8 +132,6 @@ class DefaultMigration extends Migration
 			$table->string('config');
 			$table->jsonb('data');
 		}, ["timestamps" => false, "softDeletes" => false]);
-
-		(new StartUpSeeder())->run();
 	}
 
 	public function initAppTables()
@@ -173,7 +172,6 @@ class DefaultMigration extends Migration
 
 		$this->createTable('partners', function (Blueprint $table) {
 			$table->string('name');
-			$table->string('email')->nullable();
 			$table->string('phone')->nullable();
 			$table->string('portifolio')->nullable();
 			$table->integer('price_hour')->nullable();
@@ -185,6 +183,7 @@ class DefaultMigration extends Migration
 			$table->date('contract_due_date')->nullable();
 			$table->longtext('bank_info')->nullable();
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table = $this->addForeignKey($table, 'user_id', 'users', 'id', true);
 		});
 
 		$this->createTable('partner_skills', function (Blueprint $table) {
@@ -192,12 +191,18 @@ class DefaultMigration extends Migration
 			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id');
 		}, ["id" => false, "timestamps" => false, "softDeletes" => false]);
 
+		$this->createTable('squads', function (Blueprint $table) {
+			$table->string('name');
+			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id', true);
+		});
+
 		$this->createTable('demands', function (Blueprint $table) {
 			$table->string('name');
 			$table = $this->addForeignKey($table, 'customer_id', 'customers', 'id');
 			$table = $this->addForeignKey($table, 'project_id', 'projects', 'id');
 			$table = $this->addForeignKey($table, 'partner_id', 'partners', 'id', true);
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table = $this->addForeignKey($table, 'squad_id', 'squads', 'id', true);
 			$table->text('status');
 			$table->integer('budget')->default(0);
 			$table->date('start_date')->useCurrent();
