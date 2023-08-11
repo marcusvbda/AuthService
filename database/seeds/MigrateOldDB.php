@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\TransactionStatus;
 use App\Http\Models\AccessGroup;
 use App\Http\Models\Competence;
 use App\Http\Models\Customer;
@@ -11,6 +12,7 @@ use App\Http\Models\Project;
 use App\Http\Models\Skill;
 use App\Http\Models\Squad;
 use App\Http\Models\Tenant;
+use App\Http\Models\Transaction;
 use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -31,18 +33,68 @@ class MigrateOldDB extends Seeder
 		$this->createPartners();
 		$this->createSquads();
 		$this->createDemands();
+		$this->createTransactions();
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
 	}
 
+	protected function createTransactions()
+	{
+		$createPayload = [];
+		$ref = uniqid();
+		$current_demand = null;
+
+		foreach (DB::connection("old_mysql")->table("transactions")->get() as $x) {
+			if ($current_demand !== $x->job_id) {
+				$current_demand = $x->job_id;
+				$total = array_sum(array_map(function ($item) {
+					return $item["installment_amount"];
+				}, array_filter($createPayload, function ($item) use ($ref) {
+					return $item["ref"] == $ref;
+				})));
+
+				$createPayload = array_map(function ($item) use ($total, $ref) {
+					if ($item["ref"] == $ref) {
+						$item["total_amount"] = $total;
+					}
+					return $item;
+				}, $createPayload);
+				$ref = uniqid();
+				$total = 0;
+			}
+
+			$total =  $x->amount * 100;
+			$status =  $x->status_id == 1 ? TransactionStatus::approved->name : TransactionStatus::pending->name;
+			$installment_id =  str_replace("pagamento", "", str_replace("parcela", "", strtolower($x->observation ?? "1/1")));
+			$createPayload[] = [
+				"ref" => $ref,
+				"description" => "pgto sem descrição",
+				"import_ref" => $x->id,
+				"tenant_id" => 1,
+				"demand_id" =>  $this->getOldIndex("demands", "import_ref", $x->job_id, "id"),
+				"due_date" =>  $x->due_date,
+				"total_amount" => 0,
+				"installment_amount" =>  $x->amount * 100,
+				"status" => $status,
+				"installment_id" => $installment_id,
+				"created_at" => $x->created_at,
+				"updated_at" => $x->updated_at,
+			];
+		}
+
+		Transaction::insert($createPayload);
+	}
+
 	protected function createSquads()
 	{
-		$createPayload = DB::connection("old_mysql")->table("jobs")->groupBy("squad")->get()->map(function ($x) {
+		$now = now()->format("Y-m-d H:i:s");
+		$createPayload = DB::connection("old_mysql")->table("jobs")->groupBy("squad")->get()->map(function ($x) use ($now) {
 			return [
 				"name" => $x->name,
 				"tenant_id" => 1,
-				"import_ref" => $x->id,
+				"created_at" => $now,
+				"updated_at" => $now,
 			];
 		})->toArray();
 		Squad::insert($createPayload);
@@ -73,11 +125,17 @@ class MigrateOldDB extends Seeder
 			];
 		})->toArray();
 		Demand::insert($createPayload);
+
+		foreach (Demand::groupBy("partner_id")->get() as $demand) {
+			if (!$demand->partner_id) return null;
+			$demand->skills()->sync($demand->partner->skills->pluck("id"));
+		}
 	}
 
 	protected function createPartners()
 	{
-		$createPayload = DB::connection("old_mysql")->table("partners")->get()->map(function ($x) {
+		$now = now()->format("Y-m-d H:i:s");
+		$createPayload = DB::connection("old_mysql")->table("partners")->get()->map(function ($x)  use ($now) {
 			return [
 				"name" => $x->company_name,
 				"user_id" =>  $this->getOldIndex("users", "import_ref", $x->user_id, "id"),
@@ -93,9 +151,22 @@ class MigrateOldDB extends Seeder
 				"created_at" => $x->created_at,
 				"updated_at" => $x->updated_at,
 				"import_ref" => $x->id,
+				"partner_since" => $x->date_start ?? $now,
 			];
 		})->toArray();
 		Partner::insert($createPayload);
+
+		$partnerSkillsPayload = DB::connection("old_mysql")->table("skill_user")->get()->map(function ($x) {
+			return [
+				"import_ref" => $x->id,
+				"skill_id" =>  $this->getOldIndex("skills", "import_ref", $x->skill_id, "id"),
+				"partner_id" =>  @Partner::where("user_id", $this->getOldIndex("users", "import_ref", $x->user_id, "id"))->first()->id,
+			];
+		})->filter(function ($x) {
+			return $x["partner_id"] > 0;
+		})->toArray();
+
+		DB::connection("mysql")->table("partner_skills")->insert($partnerSkillsPayload);
 	}
 
 	protected function createProjects()
@@ -221,7 +292,6 @@ class MigrateOldDB extends Seeder
 
 	public function removeTags($string)
 	{
-		$string = strip_tags($string);
 		return trim(strip_tags($string));
 	}
 }

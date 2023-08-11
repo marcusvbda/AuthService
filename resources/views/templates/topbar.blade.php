@@ -8,6 +8,7 @@
     $canViewProjects = $user->hasPermissionTo('viewlist-projects');
     $canViewPartners = $user->hasPermissionTo('viewlist-partners');
     $canViewDemands = $user->hasPermissionTo('viewlist-demands');
+    $canViewSquads = $user->hasPermissionTo('viewlist-squads');
     
     $items = [
         [
@@ -41,12 +42,17 @@
         [
             'position' => 'center',
             'title' => 'Parceiros',
-            'visible' => $canViewCompetence,
+            'visible' => $canViewCompetence || $canViewPartners || $canViewSquads,
             'items' => [
                 [
                     'title' => 'Parceiros',
                     'route' => '/admin/partners',
                     'visible' => $canViewPartners,
+                ],
+                [
+                    'title' => 'Squads',
+                    'route' => '/admin/squads',
+                    'visible' => $canViewSquads,
                 ],
                 [
                     'title' => 'Competências',

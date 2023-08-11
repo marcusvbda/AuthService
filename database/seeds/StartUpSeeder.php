@@ -73,5 +73,10 @@ class StartUpSeeder extends Seeder
 		Permission::updateOrCreate(["name" => "Editar pagamentos"], ["key" => "edit-transactions"]);
 		Permission::updateOrCreate(["name" => "Excluir pagamentos"], ["key" => "delete-transactions"]);
 		Permission::updateOrCreate(["name" => "Ver logs de pagamentos"], ["key" => "view-audits-transactions"]);
+
+		Permission::updateOrCreate(["name" => "Visualizar squads"], ["key" => "viewlist-squads"]);
+		Permission::updateOrCreate(["name" => "Cadastrar squads"], ["key" => "create-squads"]);
+		Permission::updateOrCreate(["name" => "Editar squads"], ["key" => "edit-squads"]);
+		Permission::updateOrCreate(["name" => "Excluir squads"], ["key" => "delete-squads"]);
 	}
 }

@@ -75,8 +75,8 @@ class Transactions extends Resource
             }],
             "installment_id" => ["label" => "Parcela", "sortable_index" => "installment_id"],
             "f_due_date" => ["label" => "Data de Pagto", "sortable_index" => "due_date"],
-            "f_total_amount" => ["label" => "Valor", "sortable_index" => "installment_id", "handler" => function ($row) {
-                return Vstack::makeLinesHtmlAppend("Valor da parcela : " . $row->f_total_amount, "Valor total : " . $row->f_installment_amount);
+            "f_total_amount" => ["label" => "Valor Parcela/Total", "sortable_index" => "installment_id", "handler" => function ($row) {
+                return Vstack::makeLinesHtmlAppend($row->f_installment_amount, $row->f_total_amount);
             }],
             "f_status" => ["label" => "Status", "sortable_index" => "status"],
         ];
@@ -104,6 +104,7 @@ class Transactions extends Resource
             "label" => "Descrição",
             "field" => "description",
             "description" => "Para indefificar o pagamento",
+            "disabled" => $this->isEditing(),
             "required" => true,
         ]);
 
@@ -112,7 +113,7 @@ class Transactions extends Resource
             "field" => "total_amount",
             "type" => "currency",
             "disabled" => $this->isEditing(),
-            "rules" => ["required", "min:1"],
+            "rules" => ["required"],
         ]);
 
         $fields[] =  new Text([
@@ -158,12 +159,19 @@ class Transactions extends Resource
             $due_date = $data["data"]["due_date"];
             $ref = uniqid();
             $data['data']['ref'] = $ref;
-            for ($i = 1; $i <= $installments; $i++) {
+            for ($i = 1; $i < $installments; $i++) {
                 $due_date = date("Y-m-d", strtotime("+1 month", strtotime($due_date)));
                 $data['data']['installment_id'] = $i . "/" . $installments;
                 $data['data']['due_date'] = $due_date;
                 parent::storeMethod($id, $data);
             }
+            $data['data']['installment_id'] = $i . "/" . $installments;
+        }
+
+        if ($data['data']['status'] == TransactionStatus::paid) {
+            $data['data']['date_payment'] = now()->format("Y-m-d H:i:s");
+        } else {
+            $data['data']['date_payment'] = null;
         }
 
         return parent::storeMethod($id, $data);

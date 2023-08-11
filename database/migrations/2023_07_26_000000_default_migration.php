@@ -223,6 +223,7 @@ class DefaultMigration extends Migration
 			$table->string('description');
 			$table->string("ref");
 			$table->timestamp("due_date");
+			$table->timestamp("date_payment")->nullable();
 			$table->integer('installment_amount');
 			$table->integer('total_amount');
 			$table->integer('qty_installments')->default(1);

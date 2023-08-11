@@ -181,13 +181,14 @@ class Demands extends Resource
             "field" => "partner_id",
             "description" => "Parceiros que atendem as habilidades selecionadas",
             "model"   => Partner::class,
-            // "entity_parent" => "skill_ids",
+            "entity_parent" => "skill_ids",
             // "entity_parent_message" => "Selecione as habilidades para selecionar um parceiro",
-            // "fetch_options_calllback" => function (Request $request, $query) {
-            //     return $query->whereHas("skills", function ($query) use ($request) {
-            //         $query->whereIn("skills.id", $request->skill_ids);
-            //     });
-            // }
+            "fetch_options_calllback" => function (Request $request, $query) {
+                if (!count($request->skill_ids)) return $query;
+                return $query->whereHas("skills", function ($query) use ($request) {
+                    $query->whereIn("skills.id", $request->skill_ids);
+                });
+            }
         ]);
 
         $fields[] =  new Text([
@@ -257,8 +258,8 @@ class Demands extends Resource
     public function relatedResources()
     {
         return [
-            new Transactions(["relation_fk" => "demand_id", 'relation_handler' => function ($query) {
-                return $query->orderBy("created_at", "desc")
+            new Transactions(["relation_fk" => "demand_id", 'relation_handler' => function ($query, $demand_id) {
+                return $query->where("demand_id", $demand_id)->orderBy("created_at", "desc")
                     ->orderBy("installment_id", "asc");
             }]),
         ];
