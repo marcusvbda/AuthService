@@ -224,7 +224,7 @@ class DefaultMigration extends Migration
 			$table = $this->addForeignKey($table, 'demand_id', 'demands', 'id');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 			$table->text('status');
-			$table->integer('installment_id');
+			$table->string('installment_id');
 		});
 	}
 

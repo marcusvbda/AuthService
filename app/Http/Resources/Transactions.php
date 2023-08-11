@@ -73,8 +73,8 @@ class Transactions extends Resource
             "description" => ["label" => "Descrição", "handler" => function ($row) {
                 return Vstack::makeLinesHtmlAppend($row->description, $row->ref);
             }],
+            "installment_id" => ["label" => "Parcela", "sortable_index" => "installment_id"],
             "f_due_date" => ["label" => "Data de Pagto", "sortable_index" => "due_date"],
-            "f_installment" => ["label" => "Parcela", "sortable_index" => "installment_id"],
             "f_total_amount" => ["label" => "Valor", "sortable_index" => "installment_id", "handler" => function ($row) {
                 return Vstack::makeLinesHtmlAppend("Valor da parcela : " . $row->f_total_amount, "Valor total : " . $row->f_installment_amount);
             }],
@@ -138,6 +138,7 @@ class Transactions extends Resource
                 "description" => "Essa mesma data será preservada para os próximos pagamentos (se houverem), apenas os meses serão alterados",
                 "field" => "due_date",
                 "type" => "date",
+                'default' => now()->format("Y-m-d"),
                 "required" => true,
             ]);
         }
@@ -155,13 +156,11 @@ class Transactions extends Resource
 
         if ($this->isCreating()) {
             $due_date = $data["data"]["due_date"];
-            $installment_id = 1;
-            $data['data']['installment_id'] = $installment_id;
             $ref = uniqid();
             $data['data']['ref'] = $ref;
-            for ($installment_id; $installment_id < $installments; $installment_id++) {
+            for ($i = 1; $i <= $installments; $i++) {
                 $due_date = date("Y-m-d", strtotime("+1 month", strtotime($due_date)));
-                $data['data']['installment_id'] = $installment_id;
+                $data['data']['installment_id'] = $i . "/" . $installments;
                 $data['data']['due_date'] = $due_date;
                 parent::storeMethod($id, $data);
             }

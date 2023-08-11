@@ -26,6 +26,10 @@ class Transaction extends DefaultModel
 		self::creating(function ($model) {
 			$model->status = TransactionStatus::pending->name;
 		});
+
+		self::deleting(function ($model) {
+			$model->refs()->delete();
+		});
 	}
 
 	public static function isAuditable()
@@ -43,27 +47,22 @@ class Transaction extends DefaultModel
 		return $this->hasMany(Transaction::class, "ref", "ref")->where("id", "!=", $this->id);
 	}
 
-	public function getFInstallmentAttribute()
-	{
-		return $this->installment_id . "/" . $this->qty_installments;
-	}
-
-	public function setTotalAmountAmount($val)
+	public function setTotalAmountAttribute($val)
 	{
 		$this->attributes["total_amount"] = intval($val * 100);
 	}
 
-	public function setInstallmentAmount($val)
+	public function setInstallmentAmountAttribute($val)
 	{
 		$this->attributes["installment_amount"] = intval($val * 100);
 	}
 
-	public function getTotalAmountAmount($val)
+	public function getTotalAmountAttribute($val)
 	{
 		return $val / 100;
 	}
 
-	public function getInstallmentAmount($val)
+	public function getInstallmentAmountAttribute($val)
 	{
 		return $val / 100;
 	}
@@ -71,13 +70,13 @@ class Transaction extends DefaultModel
 	public function getFInstallmentAmountAttribute()
 	{
 		$amount =  $this->installment_amount;
-		return "R$ " . number_format($amount / 100, 2, ",", ".");
+		return "R$ " . number_format($amount, 2, ",", ".");
 	}
 
 	public function getFTotalAmountAttribute()
 	{
 		$amount =  $this->total_amount;
-		return "R$ " . number_format($amount / 100, 2, ",", ".");
+		return "R$ " . number_format($amount, 2, ",", ".");
 	}
 
 	public function getFStatusAttribute()

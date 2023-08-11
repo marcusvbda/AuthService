@@ -75,7 +75,7 @@ class Demands extends Resource
     public function table()
     {
         return [
-            "code" => ["label" => "#", "sortable_index" => "id"],
+            "id" => ["label" => "#", "sortable_index" => "id"],
             "name" => ["label" => "Nome", "handler" => function ($row) {
                 $customerName = $row->customer->name;
                 $projectName = $row->project->name;
@@ -258,7 +258,10 @@ class Demands extends Resource
     public function relatedResources()
     {
         return [
-            new Transactions(["relation_fk" => "demand_id", 'order_by' => ['installment_id', 'asc']]),
+            new Transactions(["relation_fk" => "demand_id", 'relation_handler' => function ($query) {
+                return $query->orderBy("created_at", "desc")
+                    ->orderBy("installment_id", "asc");
+            }]),
         ];
     }
 }
