@@ -167,7 +167,7 @@ class Transactions extends Resource
             $data['data']['installment_id'] = $i . "/" . $installments;
         }
 
-        if ($data['data']['status'] == TransactionStatus::paid) {
+        if (@$data['data']['status'] == TransactionStatus::paid->value) {
             $data['data']['date_payment'] = now()->format("Y-m-d H:i:s");
         } else {
             $data['data']['date_payment'] = null;

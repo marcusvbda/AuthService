@@ -70,7 +70,6 @@ class Competences extends Resource
             "code" => ["label" => "#", "sortable_index" => "id"],
             "name" => ["label" => "Nome"],
             "skill_names_str" => ["label" => "Habilidades", "width" => "200px", "sortable" => false],
-            "f_created_at_badge" => ["label" => "Nome", "width" => "200px", "sortable_index" => "created_at"],
         ];
     }
 

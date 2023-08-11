@@ -1722,6 +1722,48 @@ video {
   background-color: rgb(31 41 55 / var(--tw-bg-opacity)) !important;
 }
 
+.delete-btn {
+  z-index: 2;
+}
+
+:is(.dark .el-range-input){
+  border-style: none;
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(245 245 245 / var(--tw-text-opacity));
+}
+
+.action-dialog .vstack-crud-card{
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.action-dialog .vstack-crud-card .crud-card-header{
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(38 38 38 / var(--tw-text-opacity));
+}
+:is(.dark .action-dialog .vstack-crud-card .crud-card-header){
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+.action-dialog .vstack-crud-card tr{
+  border-style: none !important;
+}
+.action-dialog .vstack-crud-card tr td{
+  border-style: none !important;
+}
+.action-dialog .vstack-crud-card tr td.field-title{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity)) !important;
+}
+:is(.dark .action-dialog .vstack-crud-card tr td.field-title){
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity)) !important;
+}
+
 body{
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
