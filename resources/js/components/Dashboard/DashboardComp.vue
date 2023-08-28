@@ -4,47 +4,6 @@
         <CardQtyProjects />
         <CardQtyCustomers />
         <CardQtyPartners />
-        <!-- <custom-option-selector
-            label="Produtos"
-            description="Selecione o produto que deseja utilizar neste checkout"
-            ref="productSelector"
-            model="App\Http\Models\Permission"
-            :filters="[
-                {
-                    label: 'Produtos Físicos',
-                    index: 'type',
-                    group: 'Tipo',
-                    disabled: false,
-                    value: 'FI',
-                },
-                {
-                    label: 'Produtos Digitais',
-                    index: 'type',
-                    group: 'Tipo',
-                    disabled: false,
-                    value: 'DI',
-                },
-                {
-                    label: 'Produtos Agrupados',
-                    index: 'type',
-                    group: 'Tipo',
-                    disabled: false,
-                    value: 'GR',
-                },
-                {
-                    label: 'Plano Assinatura',
-                    index: 'type',
-                    value: 'AS',
-                    group: 'Tipo',
-                    disabled: true,
-                },
-            ]"
-        >
-            <template v-slot:option="{ item }">
-                {{ item.original.name }}
-            </template>
-        </custom-option-selector>
-        <button @click="openDialog">abrir</button> -->
     </div>
 </template>
 <script>
