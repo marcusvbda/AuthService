@@ -5,7 +5,7 @@ use App\Http\Mutators\{
 };
 
 return [
-	"default_theme" => "dark",
+	"default_theme" => "light",
 	"default_upload_route" => "/admin/upload",
 	"resource_export_extension" => "xlsx",
 	"extra_javascript_global_variables" => [

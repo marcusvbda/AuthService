@@ -17,7 +17,6 @@ class DefaultMigration extends Migration
 			$table->collation = 'utf8mb4_unicode_ci';
 			$table->engine = 'InnoDB';
 			if ($options["id"]) $table->bigIncrements('id');
-			$table->string('import_ref')->nullable();
 			$callback($table);
 			if ($options["softDeletes"]) $table->softDeletes();
 			if ($options["timestamps"]) $table->timestamps();
@@ -142,11 +141,10 @@ class DefaultMigration extends Migration
 			$table->string('name');
 			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
 		});
-
+		
 		$this->createTable('skills', function (Blueprint $table) {
 			$table->string('name');
-			$table = $this->addForeignKey($table, 'competence_id', 'competences', 'id');
-			$table = $this->addForeignKey($table, 'tenant_id', 'tenants', 'id');
+			$table = $this->addForeignKey($table, 'competence', 'competences', 'id');
 		});
 
 		$this->createTable('customers', function (Blueprint $table) {
